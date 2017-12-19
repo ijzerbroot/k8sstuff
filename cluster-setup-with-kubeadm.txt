@@ -1,0 +1,82 @@
+
+Kubernetes cluster setup using kubeadm
+
+https://kubernetes.io/docs/setup/independent/install-kubeadm/
+https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/
+
+Install Ubuntu 16.04 without swap
+Set private network-adapter (192.168.1.10 for master)
+sudo apt-get install openssh-server git
+sudo systemctl enable ssh
+sudo systemctl disable ufw
+sudo systemctl stop ufw
+
+sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get -y update
+sudo apt-get -y install docker-ce
+sudo apt-get -y install git docker-compose curl
+
+sudo su -
+
+
+apt-get update && apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+
+ON MASTER ONLY:
+kubeadm init --apiserver-advertise-address=192.168.1.10 --pod-network-cidr=10.244.0.0/16
+sysctl net.bridge.bridge-nf-call-iptables=1
+
+#You can now join any number of machines by running the following on each node
+#as root:
+#
+#  kubeadm join --token 37c923.2d73dfd9e9f845dc 192.168.1.10:6443 --discovery-token-ca-cert-hash sha256:478091a104dac96429b811bd76dace3541b282363f121eb255d75f2444e76b6b
+
+If you are using VirtualBox (directly or via Vagrant), you will need to ensure that hostname -i returns a routable IP address (i.e. one on the second network interface, not the first one).
+
+install a pod network addon:
+export kubever=$(kubectl version | base64 | tr -d '\n')
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+
+following command should show kube-dns pod running:
+kubectl get pods --all-namespaces
+
+For allowing pods to be schedukled on master itself:
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+join nodes with the command output by kubeadm
+
+deploy kubernetes dashboard:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+OR without SSL:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/alternative/kubernetes-dashboard.yaml
+
+install eer heapster et al:
+kubectl create -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml
+kubectl apply --namespace kube-system -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+run heapster rbac:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/rbac/heapster-rbac.yaml
+
+apply the dashboard rbac
+proxy the dashboard:
+kubectl proxy
+
+make a tunnel and access it as localhost:
+http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/
+
+eventueel funky monitoring van giantswarm:
+kubectl apply --filename https://raw.githubusercontent.com/giantswarm/kubernetes-prometheus/master/manifests-all.yaml
+( te zien op https://api.<cluster-id>.k8s.gigantic.io/api/v1/proxy/namespaces/monitoring/services/prometheus:9090/targets)
+
+install traefik
+kubectl apply -f traefik-role.yaml
+kubectl apply -f traefik-daemonset.yaml
+kubectl apply -f traefik-web-ui.yaml

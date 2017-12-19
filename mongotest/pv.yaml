@@ -1,0 +1,15 @@
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: mongo-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mongodata/data/db"
