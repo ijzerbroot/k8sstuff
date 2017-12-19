@@ -36,13 +36,16 @@ sysctl net.bridge.bridge-nf-call-iptables=1
 #You can now join any number of machines by running the following on each node
 #as root:
 #
-#  kubeadm join --token 37c923.2d73dfd9e9f845dc 192.168.1.10:6443 --discovery-token-ca-cert-hash sha256:478091a104dac96429b811bd76dace3541b282363f121eb255d75f2444e76b6b
+#  kubeadm join --token 5ed8b1.db01bdd9f6a2a390 192.168.1.10:6443 --discovery-token-ca-cert-hash sha256:0c7561c0c15ccb040eaaa86194e5feaf59ae0c08e81d048954eea832366cf3bd
+
 
 If you are using VirtualBox (directly or via Vagrant), you will need to ensure that hostname -i returns a routable IP address (i.e. one on the second network interface, not the first one).
 
 install a pod network addon:
 export kubever=$(kubectl version | base64 | tr -d '\n')
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+
+#kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
 
 following command should show kube-dns pod running:
 kubectl get pods --all-namespaces
