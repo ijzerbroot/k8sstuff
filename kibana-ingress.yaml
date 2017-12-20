@@ -2,16 +2,16 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: weavescope-ui
-  namespace: kube-system
+  name: kibana-ui
+  namespace: default
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-  - host: scope.minikube
+  - host: kibana.minikube
     http:
       paths:
         - path: /
           backend:
-            serviceName: weave-scope-app
-            servicePort: 80
+            serviceName: kibana
+            servicePort: 30000
