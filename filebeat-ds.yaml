@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: filebeat
-        image: komljen/filebeat:5.3.2
+        image: docker.elastic.co/beats/filebeat:6.1.1
         resources:
           limits:
             cpu: 50m
