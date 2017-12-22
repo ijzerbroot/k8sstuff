@@ -212,6 +212,18 @@ kubectl create -f telegraf-serviceaccount.yaml
 kubectl create -f tgconfig.yaml
 kubectl create -f telegraf-ds.yaml
 
+kubectl delete -f kapacitor-deployment.yaml
+kubectl delete -f kapacitor-config.yaml
+kubectl delete -f kapacitor-serviceaccount.yaml
+kubectl delete -f kapacitor-rolebinding.yaml
+kubectl delete -f kapacitor-role.yaml
+
+kubectl create -f kapacitor-role.yaml
+kubectl create -f kapacitor-rolebinding.yaml
+kubectl create -f kapacitor-serviceaccount.yaml
+kubectl create -f kapacitor-config.yaml
+kubectl create -f kapacitor-deployment.yaml
+
 kubectl delete -f kibana-ingress.yaml
 kubectl delete -f kibana-service.yaml
 kubectl delete -f kibana-deployment.yaml
