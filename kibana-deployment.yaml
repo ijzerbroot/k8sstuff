@@ -30,7 +30,7 @@ spec:
           securityContext:
             runAsUser: 2000
             allowPrivilegeEscalation: false
-          name: kibana
+          name: logstash
           resources:
             # need more cpu upon initialization, therefore burstable class
             limits:
@@ -41,4 +41,4 @@ spec:
             - containerPort: 5601
               name: kibanaport
               protocol: TCP
-      restartPolicy: Always
+        restartPolicy: Always
