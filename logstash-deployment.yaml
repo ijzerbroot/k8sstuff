@@ -1,49 +1,65 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: logstash
   namespace: default
   labels:
-    k8s-app: logstash-app
+    k8s-app: logstash
     version: v1
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
+  selector:
+    matchLabels:
+      k8s-app: logstash
+      version: v1
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        name: logstash
+        k8s-app: logstash
+        version: v1
+        kubernetes.io/cluster-service: "true"
     spec:
+#      volumes:
+#        - name: elasticsearch-logging
+#          persistentVolumeClaim:
+#            claimName: eslogging-claim
       containers:
       - env:
         - name: LS_JAVA_OPTS
           value: -Xmx256m -Xms256m
         image: docker.elastic.co/logstash/logstash-oss:6.0.0
-        name: logstash
-        ports:
-        - containerPort: 5000
-          name: logstashin
-          protocol: TCP
-        resources: {}
-        volumeMounts:
-        - mountPath: /usr/share/logstash/pipeline
-          name: config
-        - mountPath: /usr/share/logstash/config
-          name: config2
+          securityContext:
+            runAsUser: 2000
+            allowPrivilegeEscalation: false
+          name: logstash
+          resources:
+            # need more cpu upon initialization, therefore burstable class
+            limits:
+              cpu: 1000m
+            requests:
+              cpu: 100m
+          ports:
+            - containerPort: 5000
+              name: logstashin
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /usr/share/logstash/pipeline
+              name: config
+            - mountPath: /usr/share/logstash/config
+              name: config2
       restartPolicy: Always
       volumes:
-      - name: config
-        configMap:
-          name: logstash-config
-          items:
-          - key: logstash.conf
-            path: logstash.conf
-      - name: config2
-        configMap:
-          name: logstashyaml-config
-          items:
-          - key: logstash.yml
-            path: logstash.yml
-status: {}
+        - name: config
+          configMap:
+            name: logstash-config
+            items:
+              - key: logstash.conf
+                path: logstash.conf
+        - name: config2
+            configMap:
+              name: logstashyaml-config
+              items:
+                - key: logstash.yml
+                  path: logstash.yml

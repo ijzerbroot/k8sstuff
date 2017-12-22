@@ -4,15 +4,14 @@ metadata:
   name: kibana
   namespace: default
   labels:
-    app: kibana-app
-#    kubernetes.io/cluster-service: "true"
-#    addonmanager.kubernetes.io/mode: Reconcile
+    k8s-app: kibana
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
     kubernetes.io/name: "Kibana"
 spec:
   ports:
-  - name: "5601"
-    port: 5601
+  - port: 5601
     protocol: TCP
     targetPort: kibanaport
   selector:
-    app: kibana-app
+    k8s-app: kibana

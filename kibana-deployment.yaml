@@ -1,37 +1,44 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: kibana
   namespace: default
   labels:
-    app: kibana-app
+    k8s-app: kibana
+    version: v1
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
+  selector:
+    matchLabels:
+      k8s-app: kibana
+      version: v1
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        name: kibana
+        k8s-app: kibana
+        version: v1
+        kubernetes.io/cluster-service: "true"
     spec:
+#      volumes:
+#        - name: elasticsearch-logging
+#          persistentVolumeClaim:
+#            claimName: eslogging-claim
       containers:
         - image: docker.elastic.co/kibana/kibana-oss:6.1.1
+          securityContext:
+            runAsUser: 2000
+            allowPrivilegeEscalation: false
           name: kibana
+          resources:
+            # need more cpu upon initialization, therefore burstable class
+            limits:
+              cpu: 1000m
+            requests:
+              cpu: 100m
           ports:
             - containerPort: 5601
               name: kibanaport
               protocol: TCP
-          resources: {}
-#         volumeMounts:
-#           - mountPath: /usr/share/logstash/pipeline
-#             name: config
       restartPolicy: Always
-#      volumes:
-#        - name: config
-#          configMap:
-#            name: logstash-config
-#            items:
-#              - key: logstash.conf
-#                path: logstash.conf
-status: {}
