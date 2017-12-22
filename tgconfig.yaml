@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tgconfig
+  name: tgconfigmap
 data:
   telegraf.conf: |-
     # Read metrics about CPU usage
