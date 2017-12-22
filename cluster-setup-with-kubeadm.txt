@@ -153,6 +153,8 @@ kubectl apply -f traefik-role.yaml
 kubectl apply -f traefik-daemonset.yaml
 kubectl apply -f traefik-web-ui.yaml
 
+build custom Kibana-image to support Logtrail from Kibana dockerfile on every node as "localhost/kibana:1"
+
 monitoring:
 kubectl apply -f es-clusterrole.yml
 kubectl apply -f es-serviceaccount.yml
