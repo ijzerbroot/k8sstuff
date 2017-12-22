@@ -6,6 +6,8 @@ metadata:
   labels:
     k8s-app: kibana
     version: v1
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
 spec:
   replicas: 1
   selector:
@@ -17,7 +19,9 @@ spec:
       labels:
         k8s-app: kibana
         version: v1
+        kubernetes.io/cluster-service: "true"
     spec:
+      serviceAccountName: kibana
 #      volumes:
 #        - name: elasticsearch-logging
 #          persistentVolumeClaim:
