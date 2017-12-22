@@ -73,4 +73,3 @@ spec:
           defaultMode: 0600
           name: filebeat-prospectors
       - name: data
-emptyDir: {}
