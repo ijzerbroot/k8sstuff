@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: influjxdb
+  name: influxdb
   namespace: default
   labels:
     k8s-app: influxdb
