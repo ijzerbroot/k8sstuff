@@ -171,6 +171,7 @@ kubectl create -f filebeat-config.yaml
 kubectl create -f filebeat-ds.yaml
 kubectl create -f kibana-deployment.yaml
 kubectl create -f kibana-service.yaml
+kubectl create -f kibana-ingress.yaml
 #kubectl apply -f https://raw.githubusercontent.com/elastic/beats/master/deploy/kubernetes/filebeat-kubernetes.yaml
 # check status
 kubectl --namespace=kube-system get ds/filebeat
