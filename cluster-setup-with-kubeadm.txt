@@ -157,8 +157,8 @@ build custom Kibana-image to support Logtrail from Kibana dockerfile on every no
 
 monitoring:
 kubectl apply -f es-clusterrole.yml
-kubectl apply -f es-serviceaccount.yml
 kubectl apply -f es-clusterrolebinding.yml
+kubectl apply -f es-serviceaccount.yml
 #kubectl apply -f es-statefulset.yml
 #kubectl apply -f es-pv.yml
 #kubectl apply -f es-pvclaim.yml
@@ -169,8 +169,21 @@ kubectl create -f logstash-config.yaml
 kubectl create -f logstashyaml-config.yaml
 kubectl create -f logstash-deployment.yaml
 kubectl create -f logstash-service.yaml
+kubectl create -f filebeat-role.yaml
+kubectl create -f filebeat-rolebinding.yaml
+kubectl create -f filebeat-serviceaccount.yaml
 kubectl create -f filebeat-config.yaml
 kubectl create -f filebeat-ds.yaml
+kubectl delete -f kibana-ingress.yaml
+kubectl delete -f kibana-service.yaml
+kubectl delete -f kibana-deployment.yaml
+kubectl delete -f kibana-serviceaccount.yaml
+kubectl delete -f kibana-clusterrolebinding.yaml
+kubectl delete -f kibana-clusterrole.yaml
+
+kubectl create -f kibana-clusterrole.yaml
+kubectl create -f kibana-clusterrolebinding.yaml
+kubectl create -f kibana-serviceaccount.yaml
 kubectl create -f kibana-deployment.yaml
 kubectl create -f kibana-service.yaml
 kubectl create -f kibana-ingress.yaml

@@ -36,9 +36,4 @@ spec:
             - containerPort: 5601
               name: kibanaport
               protocol: TCP
-          volumeMounts:
-            - mountPath: /conf
-              name: logtrailconfig
-            - mountPath: /scripts
-              name: setupsh
       restartPolicy: Always
