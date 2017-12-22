@@ -156,24 +156,38 @@ kubectl apply -f traefik-web-ui.yaml
 build custom Kibana-image to support Logtrail from Kibana dockerfile on every node as "localhost/kibana-logtrail:6.1.0"
 
 monitoring:
-kubectl apply -f es-clusterrole.yml
-kubectl apply -f es-clusterrolebinding.yml
-kubectl apply -f es-serviceaccount.yml
-#kubectl apply -f es-statefulset.yml
-#kubectl apply -f es-pv.yml
-#kubectl apply -f es-pvclaim.yml
+
+kubectl delete -f es-ingress.yaml
+kubectl delete -f es-service.yml
+kubectl delete -f es-deployment.yml
+kubectl delete -f es-serviceaccount.yml
+kubectl delete -f es-clusterrolebinding.yml
+kubectl delete -f es-clusterrole.yml
+
+kubectl create -f es-clusterrole.yml
+kubectl create -f es-clusterrolebinding.yml
+kubectl create -f es-serviceaccount.yml
 kubectl create -f es-deployment.yml
 kubectl create -f es-service.yml
 kubectl create -f es-ingress.yaml
+
 kubectl create -f logstash-config.yaml
 kubectl create -f logstashyaml-config.yaml
 kubectl create -f logstash-deployment.yaml
 kubectl create -f logstash-service.yaml
+
+kubectl delete -f filebeat-ds.yaml
+kubectl delete -f filebeat-config.yaml
+kubectl delete -f filebeat-serviceaccount.yaml
+kubectl delete -f filebeat-rolebinding.yaml
+kubectl delete -f filebeat-role.yaml
+
 kubectl create -f filebeat-role.yaml
 kubectl create -f filebeat-rolebinding.yaml
 kubectl create -f filebeat-serviceaccount.yaml
 kubectl create -f filebeat-config.yaml
 kubectl create -f filebeat-ds.yaml
+
 kubectl delete -f kibana-ingress.yaml
 kubectl delete -f kibana-service.yaml
 kubectl delete -f kibana-deployment.yaml

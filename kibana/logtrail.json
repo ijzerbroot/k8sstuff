@@ -20,7 +20,7 @@
         "hostname" : "kubernetes.container.name",
         "message": "log"
     },
-    "message_format": "{{{message}}}"
+    "message_format": "{{{log}}}"
   },
   "color_mapping" : {
     }
