@@ -33,11 +33,11 @@ spec:
               - key: logstash.conf
                 path: logstash.conf
         - name: config2
-            configMap:
-              name: logstashyaml-config
-              items:
-                - key: logstash.yml
-                  path: logstash.yml
+          configMap:
+            name: logstashyaml-config
+            items:
+              - key: logstash.yml
+                path: logstash.yml
       containers:
       - env:
         - name: LS_JAVA_OPTS
