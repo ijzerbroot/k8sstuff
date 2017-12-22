@@ -39,7 +39,7 @@ spec:
       - env:
         - name: LS_JAVA_OPTS
           value: -Xmx256m -Xms256m
-        image: docker.elastic.co/logstash/logstash-oss:6.0.0
+        image: docker.elastic.co/logstash/logstash-oss:6.1.1
         name: logstash
         resources:
           # need more cpu upon initialization, therefore burstable class
