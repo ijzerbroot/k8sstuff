@@ -25,6 +25,19 @@ spec:
 #        - name: elasticsearch-logging
 #          persistentVolumeClaim:
 #            claimName: eslogging-claim
+      volumes:
+        - name: config
+          configMap:
+            name: logstash-config
+            items:
+              - key: logstash.conf
+                path: logstash.conf
+        - name: config2
+            configMap:
+              name: logstashyaml-config
+              items:
+                - key: logstash.yml
+                  path: logstash.yml
       containers:
       - env:
         - name: LS_JAVA_OPTS
@@ -50,16 +63,3 @@ spec:
           - mountPath: /usr/share/logstash/config
             name: config2
       restartPolicy: Always
-      volumes:
-        - name: config
-          configMap:
-            name: logstash-config
-            items:
-              - key: logstash.conf
-                path: logstash.conf
-        - name: config2
-            configMap:
-              name: logstashyaml-config
-              items:
-                - key: logstash.yml
-                  path: logstash.yml
