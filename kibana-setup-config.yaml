@@ -7,9 +7,9 @@ metadata:
     k8s-app: kibana
     kubernetes.io/cluster-service: "false"
 data:
-  setup.sh: |-
+  kibana-setupsh: |-
     #!/bin/bash
 
-    /usr/share/kibana/bin/kibana-plugin install https://github.com/sivasamyk/logtrail/releases/download/v0.1.23/logtrail-6.0.0-0.1.23.zip
-    cp /tmp/logtrailconf /usr/share/kibana/plugins/logtrail/logtrail.json
+    /usr/share/kibana/bin/kibana-plugin install https://github.com/sivasamyk/logtrail/releases/download/v0.1.23/logtrail-6.1.0-0.1.23.zip
+    cp /conf/logtrailconf /usr/share/kibana/plugins/logtrail/logtrail.json
     /usr/local/bin/kibana-docker

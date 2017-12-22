@@ -36,13 +36,14 @@ spec:
         - name: setupsh
           configMap:
             name: kibana-setupsh
+            defaultMode: 0744
             items:
-              - key: setup.sh
+              - key: kibana-setupsh
                 path: setup.sh
       containers:
         - image: docker.elastic.co/kibana/kibana-oss:6.1.1
           name: kibana
-          command: ["/setup.sh"]
+          command: ["/scripts/setup.sh"]
           resources:
             # need more cpu upon initialization, therefore burstable class
             limits:
@@ -54,8 +55,8 @@ spec:
               name: kibanaport
               protocol: TCP
           volumeMounts:
-            - mountPath: /tmp
+            - mountPath: /conf
               name: logtrailconfig
-            - mountPath: /
+            - mountPath: /scripts
               name: setupsh
       restartPolicy: Always
