@@ -26,9 +26,23 @@ spec:
 #        - name: elasticsearch-logging
 #          persistentVolumeClaim:
 #            claimName: eslogging-claim
+      volumes:
+        - name: logtrailconfig
+          configMap:
+            name: kibana-logtrailconf
+            items:
+              - key: logtrailconf
+                path: logtrailconf
+        - name: setup.sh
+          configMap:
+            name: kibana-setup.sh
+            items:
+              - key: setup.sh
+                path: setup.sh
       containers:
         - image: docker.elastic.co/kibana/kibana-oss:6.1.1
           name: kibana
+          entrypoint: ["/setup.sh"]
           resources:
             # need more cpu upon initialization, therefore burstable class
             limits:
@@ -39,4 +53,9 @@ spec:
             - containerPort: 5601
               name: kibanaport
               protocol: TCP
+          volumeMounts:
+            - mountPath: /tmp
+              name: logtrailconfig
+            - mountPath: /
+              name: setup.sh
       restartPolicy: Always

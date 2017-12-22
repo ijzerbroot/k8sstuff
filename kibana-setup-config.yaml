@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-setup.sh
+  namespace: default
+  labels:
+    k8s-app: kibana
+    kubernetes.io/cluster-service: "false"
+data:
+  setup.sh: |-
+    #!/bin/bash
+
+    /usr/share/kibana/bin/kibana-plugin install https://github.com/sivasamyk/logtrail/releases/download/v0.1.23/logtrail-6.0.0-0.1.23.zip
+    cp /tmp/logtrailconf /usr/share/kibana/plugins/logtrail/logtrail.json
+    /usr/local/bin/kibana-docker
