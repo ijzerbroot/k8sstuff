@@ -9,8 +9,8 @@ metadata:
 data:
   logtrailconf: |-
     {
-  "version" : 1,
-  "index_patterns" : [
+    "version" : 1,
+    "index_patterns" : [
     {
       "es": {
         "default_index": "filebeat-*"
@@ -33,7 +33,7 @@ data:
         "message_format": "{{{message}}}"
       },
       "color_mapping" : {
+        }
       }
+     ]
     }
-  ]
-}
