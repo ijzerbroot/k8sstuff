@@ -6,8 +6,6 @@ metadata:
   labels:
     k8s-app: logstash
     version: v1
-    kubernetes.io/cluster-service: "true"
-    addonmanager.kubernetes.io/mode: Reconcile
 spec:
   replicas: 1
   selector:
@@ -19,7 +17,6 @@ spec:
       labels:
         k8s-app: logstash
         version: v1
-        kubernetes.io/cluster-service: "true"
     spec:
 #      volumes:
 #        - name: elasticsearch-logging
@@ -43,9 +40,6 @@ spec:
         - name: LS_JAVA_OPTS
           value: -Xmx256m -Xms256m
         image: docker.elastic.co/logstash/logstash-oss:6.0.0
-        securityContext:
-          runAsUser: 2000
-          allowPrivilegeEscalation: false
         name: logstash
         resources:
           # need more cpu upon initialization, therefore burstable class
