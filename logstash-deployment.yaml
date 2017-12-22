@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: logstash
+  namespace: default
+  labels:
+    k8s-app: logstash-app
+    version: v1
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: logstash
+    spec:
+      containers:
+      - env:
+        - name: LS_JAVA_OPTS
+          value: -Xmx256m -Xms256m
+        image: docker.elastic.co/logstash/logstash-oss:6.0.0
+        name: logstash
+        ports:
+        - containerPort: 5000
+          name: logstashin
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+        - mountPath: /usr/share/logstash/pipeline
+          name: config
+        - mountPath: /usr/share/logstash/config
+          name: config2
+      restartPolicy: Always
+      volumes:
+      - name: config
+        configMap:
+          name: logstash-config
+          items:
+          - key: logstash.conf
+            path: logstash.conf
+      - name: config2
+        configMap:
+          name: logstashyaml-config
+          items:
+          - key: logstash.yml
+            path: logstash.yml
+status: {}

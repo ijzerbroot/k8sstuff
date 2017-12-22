@@ -18,6 +18,9 @@ sudo apt-get -y update
 sudo apt-get -y install docker-ce
 sudo apt-get -y install git docker-compose curl
 
+ALL MACHINES:
+sudo sysctl -w vm.max_map_count=262144
+
 sudo su -
 
 
@@ -79,6 +82,71 @@ kubectl proxy
 make a tunnel and access it as localhost:
 http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/
 
+setup shared storage. Example Gluster (from https://launchpad.net/~gluster):
+
+on gluster server:
+sudo add-apt-repository ppa:gluster/glusterfs-3.12
+sudo apt-get update
+sudo apt-get install glusterfs-server
+
+on nodes:
+sudo add-apt-repository ppa:gluster/glusterfs-3.12
+sudo apt-get update
+sudo apt-get install glusterfs-client
+
+# glusterfs uses /var/lib/glusterd for state
+# Make gluster storage volume:
+
+parted -s /dev/xvdz mklabel msdos
+parted -s /dev/xvdz mkpart primary 1 100%
+
+mkfs.xfs -i size=512 /dev/xvdz1
+mkdir -p /data/brick1
+echo '/dev/xvdz1 /data/brick1 xfs defaults 1 2' >> /etc/fstab
+mount -a && mount
+
+# let firewall accept all traffic from other nodes:
+# iptables -I INPUT -p all -s <peer ip-address> -j ACCEPT
+# configure trusted pool on each server:  gluster peer probe <peer>
+
+# on each server make subdir:
+mkdir -p /data/brick1/gv0
+
+# on any one of the servers create volume:
+gluster volume create gv0 replica 2 server1:/data/brick1/gv0 server2:/data/brick1/gv0
+gluster volume start gv0
+gluster volume info
+# test it
+# mount -t glusterfs server1:/gv0 /mnt
+
+chown 2000 /data/brick1/gv0
+
+add the glusterfs endpoints (server addresses)
+kubectl create -f glusterfs-endpoints.json
+verify:
+kubectl get endpoints
+
+# create a service for the glusterfs endpoints so that they will persist:
+kubectl create -f glusterfs-service.json
+
+
+# To use glusterfs storage in a pod (path is glusterfs volume name):
+#"volumes": [
+#  {
+#    "name": "glusterfsvol",
+#    "glusterfs": {
+#      "endpoints": "glusterfs-cluster",
+#      "path": "kube_vol",
+#      "readWrite": true
+#    }
+#  }
+#]
+
+# to see if gluster volumes are used:
+#kubectl exec glusterfs -- mount | grep gluster
+
+
+# OR RUN gluster in pods! https://github.com/gluster/gluster-kubernetes
 
 install traefik
 kubectl apply -f traefik-role.yaml
@@ -90,11 +158,19 @@ kubectl apply -f es-clusterrole.yml
 kubectl apply -f es-serviceaccount.yml
 kubectl apply -f es-clusterrolebinding.yml
 #kubectl apply -f es-statefulset.yml
-kubectl apply -f es-pv.yml
-kubectl apply -f es-pvclaim.yml
-kubectl es-deployment.yml
-kubectl apply -f es-service.yml
-
-kubectl apply -f https://raw.githubusercontent.com/elastic/beats/master/deploy/kubernetes/filebeat-kubernetes.yaml
+#kubectl apply -f es-pv.yml
+#kubectl apply -f es-pvclaim.yml
+kubectl create -f es-deployment.yml
+kubectl create -f es-service.yml
+kubectl create -f es-ingress.yaml
+kubectl create -f logstash-config.yaml
+kubectl create -f logstashyaml-config.yaml
+kubectl create -f logstash-deployment.yaml
+kubectl create -f logstash-service.yaml
+kubectl create -f filebeat-config.yaml
+kubectl create -f filebeat-ds.yaml
+kubectl create -f kibana-deployment.yaml
+kubectl create -f kibana-service.yaml
+#kubectl apply -f https://raw.githubusercontent.com/elastic/beats/master/deploy/kubernetes/filebeat-kubernetes.yaml
 # check status
 kubectl --namespace=kube-system get ds/filebeat
