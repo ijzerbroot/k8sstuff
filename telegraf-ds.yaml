@@ -27,7 +27,7 @@ spec:
               path: telegraf.conf
       containers:
       - name: telegraf
-        image: telegraf:1.3
+        image: telegraf:1.5
         securityContext:
           runAsUser: 0
         resources:
