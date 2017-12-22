@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: tgconfig
 data:
-  tgconfig: |-
+  telegraf.conf: |-
     # Read metrics about CPU usage
     [[inputs.cpu]]
       percpu = false

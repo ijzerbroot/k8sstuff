@@ -21,6 +21,12 @@ spec:
           path: /var/run/docker.sock
       - name: tgconfig
         configMap:
+          name: tgconfig
+          items:
+            - key: telegraf.conf
+              path: telegraf.conf
+      - name: tgconfig
+        configMap:
           defaultMode: 0644
           name: tgconfig
       containers:
@@ -38,6 +44,5 @@ spec:
         - name: tgconfig
           mountPath: /etc/telegraf
           readOnly: true
-          subPath: telegraf.conf
         - name: docker-socket
           mountPath: /var/run/docker.sock
