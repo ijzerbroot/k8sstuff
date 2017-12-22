@@ -3,9 +3,6 @@ kind: Deployment
 metadata:
   name: kibana
   namespace: default
-  labels:
-    k8s-app: kibana-app
-    version: v1
 spec:
   replicas: 1
   strategy:
