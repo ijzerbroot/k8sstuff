@@ -33,7 +33,7 @@ spec:
             items:
               - key: logtrailconf
                 path: logtrailconf
-        - name: setup.sh
+        - name: setupsh
           configMap:
             name: kibana-setupsh
             items:
@@ -57,5 +57,5 @@ spec:
             - mountPath: /tmp
               name: logtrailconfig
             - mountPath: /
-              name: setup.sh
+              name: setupsh
       restartPolicy: Always
