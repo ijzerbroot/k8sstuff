@@ -188,6 +188,18 @@ kubectl create -f filebeat-serviceaccount.yaml
 kubectl create -f filebeat-config.yaml
 kubectl create -f filebeat-ds.yaml
 
+kubectl delete -f influxdb-service.yaml
+kubectl delete -f influxdb-deployment.yaml
+kubectl delete -f influxdb-serviceaccount.yaml
+kubectl delete -f influxdb-rolebinding.yaml
+kubectl delete -f influxdb-role.yaml
+
+kubectl create -f influxdb-role.yaml
+kubectl create -f influxdb-rolebinding.yaml
+kubectl create -f influxdb-serviceaccount.yaml
+kubectl create -f influxdb-deployment.yaml
+kubectl create -f influxdb-service.yaml
+
 kubectl delete -f telegraf-ds.yaml
 kubectl delete -f tgconfig.yaml
 kubectl delete -f telegraf-serviceaccount.yaml
