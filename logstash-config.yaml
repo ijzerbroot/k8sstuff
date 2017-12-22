@@ -30,4 +30,8 @@ data:
         index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
         document_type => "%{[@metadata][type]}"
       }
+      file {
+        path => /tmp/logstash.out
+        codec => line { format => "custom format: %{message}"}
+      }
     }
