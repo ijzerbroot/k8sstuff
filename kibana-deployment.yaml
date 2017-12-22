@@ -21,6 +21,7 @@ spec:
         version: v1
         kubernetes.io/cluster-service: "true"
     spec:
+      dnsPolicy: ClusterFirst 
       serviceAccountName: kibana
 #      volumes:
 #        - name: elasticsearch-logging

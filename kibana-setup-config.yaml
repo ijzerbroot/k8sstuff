@@ -10,7 +10,7 @@ data:
   kibana-setupsh: |-
     #!/bin/bash
     # Work around virtualbox-issue with kube-dns not forwarding external DNS
-    cp /etc/resolv.conf /tmp && cat /tmp/resolv.conf | sed 's/nameserver /nameserver 8.8.8.8 /' > /etc/resolv.conf
+    #cp /etc/resolv.conf /tmp && cat /tmp/resolv.conf | sed 's/nameserver /nameserver 8.8.8.8 /' > /etc/resolv.conf
     /usr/share/kibana/bin/kibana-plugin install https://github.com/sivasamyk/logtrail/releases/download/v0.1.23/logtrail-6.1.0-0.1.23.zip
     cp /conf/logtrailconf /usr/share/kibana/plugins/logtrail/logtrail.json
     /usr/local/bin/kibana-docker
