@@ -1,0 +1,39 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: chronograf
+  namespace: default
+  labels:
+    k8s-app: chronograf
+    version: v1
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: chronograf
+      version: v1
+  template:
+    metadata:
+      labels:
+        k8s-app: chronograf
+        version: v1
+        kubernetes.io/cluster-service: "true"
+    spec:
+      serviceAccountName: chronograf
+      containers:
+#        - image: docker.elastic.co/kibana/kibana-oss:6.1.0
+        - image: chronograf:1.3
+          name: chronograf
+          resources:
+            # need more cpu upon initialization, therefore burstable class
+            limits:
+              cpu: 1000m
+            requests:
+              cpu: 100m
+          ports:
+            - containerPort: 8888
+              name: chronografport
+              protocol: TCP
+      restartPolicy: Always

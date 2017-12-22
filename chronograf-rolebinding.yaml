@@ -1,0 +1,18 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: default
+  name: chronograf
+  labels:
+    k8s-app: chronograf
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+subjects:
+- kind: ServiceAccount
+  name: chronograf
+  namespace: default
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: chronograf
+  apiGroup: ""

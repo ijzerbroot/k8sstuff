@@ -224,6 +224,20 @@ kubectl create -f kapacitor-serviceaccount.yaml
 kubectl create -f kapacitor-config.yaml
 kubectl create -f kapacitor-deployment.yaml
 
+kubectl delete -f chronograf-ingress.yaml
+kubectl delete -f chronograf-service.yaml
+kubectl delete -f chronograf-deployment.yaml
+kubectl delete -f chronograf-serviceaccount.yaml
+kubectl delete -f chronograf-rolebinding.yaml
+kubectl delete -f chronograf-role.yaml
+
+kubectl create -f chronograf-role.yaml
+kubectl create -f chronograf-rolebinding.yaml
+kubectl create -f chronograf-serviceaccount.yaml
+kubectl create -f chronograf-deployment.yaml
+kubectl create -f chronograf-service.yaml
+kubectl create -f chronograf-ingress.yaml
+
 kubectl delete -f kibana-ingress.yaml
 kubectl delete -f kibana-service.yaml
 kubectl delete -f kibana-deployment.yaml
