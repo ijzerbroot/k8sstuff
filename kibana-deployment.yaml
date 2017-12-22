@@ -22,28 +22,10 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: kibana
-#      volumes:
-#        - name: elasticsearch-logging
-#          persistentVolumeClaim:
-#            claimName: eslogging-claim
-      volumes:
-        - name: logtrailconfig
-          configMap:
-            name: kibana-logtrailconf
-            items:
-              - key: logtrailconf
-                path: logtrailconf
-        - name: setupsh
-          configMap:
-            name: kibana-setupsh
-            defaultMode: 0744
-            items:
-              - key: kibana-setupsh
-                path: setup.sh
       containers:
-        - image: docker.elastic.co/kibana/kibana-oss:6.1.1
+#        - image: docker.elastic.co/kibana/kibana-oss:6.1.0
+        - image: localhost/kibana-logtrail:6.1.0
           name: kibana
-          command: ["/scripts/setup.sh"]
           resources:
             # need more cpu upon initialization, therefore burstable class
             limits:
