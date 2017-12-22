@@ -31,7 +31,7 @@ data:
         document_type => "%{[@metadata][type]}"
       }
       file {
-        path => /tmp/logstash.out
+        path => "/tmp/logstash.out"
         codec => line { format => "custom format: %{message}"}
       }
     }
