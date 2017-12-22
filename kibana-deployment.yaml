@@ -35,7 +35,7 @@ spec:
                 path: logtrailconf
         - name: setup.sh
           configMap:
-            name: kibana-setup.sh
+            name: kibana-setupsh
             items:
               - key: setup.sh
                 path: setup.sh
