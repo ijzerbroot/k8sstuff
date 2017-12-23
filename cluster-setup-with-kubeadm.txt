@@ -171,20 +171,24 @@ mkdir -p /data/brick1/gv0
 mkdir -p /data/brick1/gv1
 mkdir -p /data/brick1/gv2
 mkdir -p /data/brick1/gv3
+mkdir -p /data/brick1/gv4
 
 # on any one of the servers create volume:
 #gluster volume create gv0 replica 2 server1:/data/brick1/gv0 server2:/data/brick1/gv0
 #gluster volume create gv1 replica 2 server1:/data/brick1/gv1 server2:/data/brick1/gv1
 #gluster volume create gv2 replica 2 server1:/data/brick1/gv2 server2:/data/brick1/gv2
 #gluster volume create gv3 replica 2 server1:/data/brick1/gv3 server2:/data/brick1/gv3
+#gluster volume create gv4 replica 2 server1:/data/brick1/gv4 server2:/data/brick1/gv4
 gluster volume create gv0 192.168.1.10:/data/brick1/gv0
 gluster volume create gv1 192.168.1.10:/data/brick1/gv1
 gluster volume create gv2 192.168.1.10:/data/brick1/gv2
 gluster volume create gv3 192.168.1.10:/data/brick1/gv3
+gluster volume create gv4 192.168.1.10:/data/brick1/gv4
 gluster volume start gv0
 gluster volume start gv1
 gluster volume start gv2
 gluster volume start gv3
+gluster volume start gv4
 gluster volume info
 # test it
 # mount -t glusterfs server1:/gv0 /mnt

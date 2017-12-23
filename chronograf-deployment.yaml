@@ -22,6 +22,12 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: chronograf
+      volumes:
+        - name: chronografdata
+          glusterfs:
+            endpoints: glusterfs-cluster
+            path: gv4
+            readOnly: false
       containers:
 #        - image: docker.elastic.co/kibana/kibana-oss:6.1.0
         - image: chronograf:1.3
@@ -36,4 +42,7 @@ spec:
             - containerPort: 8888
               name: chronografport
               protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/chronograf
+              name: chronografdata
       restartPolicy: Always
