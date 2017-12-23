@@ -136,11 +136,19 @@ on gluster server:
 sudo add-apt-repository ppa:gluster/glusterfs-3.12
 sudo apt-get update
 sudo apt-get install glusterfs-server
+CENTOS:
+yum -y install centos-release-gluster
+yum -y install glusterfs-server
+systemctl enable glusterd.service
+systemctl start glusterd.service
 
 on nodes:
 sudo add-apt-repository ppa:gluster/glusterfs-3.12
 sudo apt-get update
 sudo apt-get install glusterfs-client
+CENTOS:
+yum -y install centos-release-gluster
+yum -y install glusterfs
 
 # glusterfs uses /var/lib/glusterd for state
 # Make gluster storage volume:
@@ -195,8 +203,6 @@ kubectl create -f glusterfs-service.json
 
 
 # OR RUN gluster in pods! https://github.com/gluster/gluster-kubernetes
-
-
 
 build custom Kibana-image to support Logtrail from Kibana dockerfile on every node as "localhost/kibana-logtrail:6.1.0"
 docker build -t localhost/kibana-logtrail:6.1.0 kibana
