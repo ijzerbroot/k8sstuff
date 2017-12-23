@@ -30,20 +30,18 @@ spec:
             "path": "gv3",
             "readOnly": false
             }
-        }
+        },
+        configMap:
+          name: kapacitorconfigmap
+          items:
+           - key: kapacitor.conf
+             path: kapacitor.conf
+          defaultMode: 0644
       ]
 #      volumes:
 #        - name: elasticsearch-logging
 #          persistentVolumeClaim:
 #            claimName: eslogging-claim
-      volumes:
-      - name: kconfig
-        configMap:
-          name: kapacitorconfigmap
-          items:
-            - key: kapacitor.conf
-              path: kapacitor.conf
-          defaultMode: 0644
       containers:
         - image: kapacitor:1.4
           name: kapacitor
