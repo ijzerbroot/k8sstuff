@@ -20,6 +20,8 @@ sudo apt-get -y install git docker-compose curl
 
 ALL MACHINES:
 sudo sysctl -w vm.max_map_count=262144
+sudo sysctl -w net.bridge.bridge-nf-call-iptables=1
+net.ipv4.ip_forward = 1
 
 sudo su -
 
@@ -34,24 +36,30 @@ apt-get install -y kubelet kubeadm kubectl
 
 ON MASTER ONLY:
 kubeadm init --apiserver-advertise-address=192.168.1.10 --pod-network-cidr=10.244.0.0/16
-sysctl net.bridge.bridge-nf-call-iptables=1
+
+install a pod network addon:
+#export kubever=$(kubectl version | base64 | tr -d '\n')
+#kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+
+kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
+#kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+#kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+#kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+#kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.7/rbac.yaml
+#kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.7/canal.yaml
+
+reboot master
+
+following command should show kube-dns pod running:
+kubectl get pods --all-namespaces
 
 #You can now join any number of machines by running the following on each node
 #as root:
 #
-#  kubeadm join --token 5ed8b1.db01bdd9f6a2a390 192.168.1.10:6443 --discovery-token-ca-cert-hash sha256:0c7561c0c15ccb040eaaa86194e5feaf59ae0c08e81d048954eea832366cf3bd
+#  kubeadm join --token 71011c.9c08c7840fa8d875 192.168.1.10:6443 --discovery-token-ca-cert-hash sha256:4023fac7ad6ce9d9de8ac034d3d1d7e8cbb00d6a22d9c367fefa1c597ef74cea
 
 
-If you are using VirtualBox (directly or via Vagrant), you will need to ensure that hostname -i returns a routable IP address (i.e. one on the second network interface, not the first one).
-
-install a pod network addon:
-export kubever=$(kubectl version | base64 | tr -d '\n')
-kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
-
-#kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
-
-following command should show kube-dns pod running:
-kubectl get pods --all-namespaces
+If you are using VirtualBox (directly or via Vagrant), you will need to ensure that hostname -i returns a routable IP address. also the first ethernet adapter should be a cluster-reachable one (internal network)
 
 For allowing pods to be schedukled on master itself:
 kubectl taint nodes --all node-role.kubernetes.io/master-
@@ -64,18 +72,20 @@ OR without SSL:
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/alternative/kubernetes-dashboard.yaml
 
 installeer eventueel heapster et al:
+#kubectl create -f https://git.io/weave-kube
+#$ kubectl create -f https://raw.githubusercontent.com/kubernetes/kops/master/addons/monitoring-standalone/v1.2.0.yaml
+
 #kubectl create -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml
 #kubectl create -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana.yaml
 #kubectl create -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml
-#kubectl apply --namespace kube-system -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+# weave scope
+kubectl apply --namespace kube-system -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 run heapster rbac:
 #kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/rbac/heapster-rbac.yaml
 
 maar beter TICK stack en ELK
 
-
-
-apply the dashboard rbac
 proxy the dashboard:
 kubectl proxy
 

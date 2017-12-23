@@ -8,10 +8,10 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-  - host: scope.minikube
+  - host: k8s.minikube
     http:
       paths:
-        - path: /
+        - path: /scope
           backend:
             serviceName: weave-scope-app
             servicePort: 80
