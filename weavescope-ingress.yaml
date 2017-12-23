@@ -12,7 +12,7 @@ spec:
   - host: k8s.minikube
     http:
       paths:
-        - path: /scope
+        - path: /
           backend:
             serviceName: weave-scope-app
             servicePort: 80
