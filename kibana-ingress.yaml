@@ -6,13 +6,13 @@ metadata:
   namespace: default
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.frontend.rule.type: PathPrefixStrip
+#    traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
-  - host: k8s.minikube
+  - host: kibana.minikube
     http:
       paths:
-        - path: /kibana
+        - path: /
           backend:
             serviceName: kibana
             servicePort: 5601

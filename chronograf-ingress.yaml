@@ -6,13 +6,13 @@ metadata:
   namespace: default
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.frontend.rule.type: PathPrefixStrip
+#    traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
-  - host: k8s.minikube
+  - host: chronograf.minikube
     http:
       paths:
-        - path: /chronograf
+        - path: /
           backend:
             serviceName: chronograf
             servicePort: 8888
