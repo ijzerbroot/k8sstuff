@@ -22,6 +22,24 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: influxdb
+      volumes: [
+        {
+          "name": "influxdbmeta",
+          "glusterfs": {
+            "endpoints": "glusterfs-cluster",
+            "path": "gv1",
+            "readOnly": false
+            }
+        },
+        {
+          "name": "influxdbdata",
+          "glusterfs": {
+            "endpoints": "glusterfs-cluster",
+            "path": "gv2",
+            "readOnly": false
+            }
+        }
+      ]
       containers:
 #        - image: docker.elastic.co/kibana/kibana-oss:6.1.0
         - image: influxdb:1.4
@@ -36,4 +54,9 @@ spec:
             - containerPort: 8086
               name: influxdbport
               protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/influxdb/meta
+              name: influxdbmeta
+            - mountPath: /var/lib/influxdb/data
+              name: influxdbdata
       restartPolicy: Always

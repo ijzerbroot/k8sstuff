@@ -149,6 +149,7 @@ sudo apt-get install glusterfs-client
 CENTOS:
 yum -y install centos-release-gluster
 yum -y install glusterfs
+yum -y install glusterfs-fuse
 
 # glusterfs uses /var/lib/glusterd for state
 # Make gluster storage volume:
@@ -167,9 +168,16 @@ mount -a && mount
 
 # on each server make subdir:
 mkdir -p /data/brick1/gv0
+mkdir -p /data/brick1/gv1
+mkdir -p /data/brick1/gv2
 
 # on any one of the servers create volume:
-gluster volume create gv0 replica 2 server1:/data/brick1/gv0 server2:/data/brick1/gv0
+#gluster volume create gv0 replica 2 server1:/data/brick1/gv0 server2:/data/brick1/gv0
+#gluster volume create gv1 replica 2 server1:/data/brick1/gv1 server2:/data/brick1/gv1
+#gluster volume create gv2 replica 2 server1:/data/brick1/gv2 server2:/data/brick1/gv2
+gluster volume create gv0 192.168.1.10:/data/brick1/gv0
+gluster volume create gv1 192.168.1.10:/data/brick1/gv1
+gluster volume create gv2 192.168.1.10:/data/brick1/gv2
 gluster volume start gv0
 gluster volume info
 # test it
