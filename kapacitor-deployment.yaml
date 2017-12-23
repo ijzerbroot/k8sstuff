@@ -28,7 +28,8 @@ spec:
             endpoints: glusterfs-cluster
             path: gv3
             readOnly: false
-        - configMap:
+        - name: kconfig
+          configMap:
             name: kapacitorconfigmap
             items:
              - key: kapacitor.conf
