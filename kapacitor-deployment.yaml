@@ -61,4 +61,4 @@ spec:
             - mountPath: /etc/kapacitor
               name: kconfig
             - mountPath: /var/lib/kapacitor
-                name: kapacitordata
+              name: kapacitordata
