@@ -8,10 +8,10 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-  - host: chronograf.minikube
+  - host: k8s.minikube
     http:
       paths:
-        - path: /
+        - path: /chronograf
           backend:
             serviceName: chronograf
             servicePort: 8888
