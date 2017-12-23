@@ -9,7 +9,7 @@ metadata:
     traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
-  - host: k8s.minikube
+  - host: scope.minikube
     http:
       paths:
         - path: /
