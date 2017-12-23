@@ -8,10 +8,10 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-  - host: kibana.minikube
+  - host: k8s.minikube
     http:
       paths:
-        - path: /
+        - path: /kibana
           backend:
             serviceName: kibana
             servicePort: 5601
