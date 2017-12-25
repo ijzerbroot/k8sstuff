@@ -28,13 +28,87 @@ sudo pip install docker-compose
 disable selinux
 sudo systemctl disable firewalld
 
-ALL MACHINES:
-sudo sysctl -w vm.max_map_count=262144
-sudo sysctl -w net.bridge.bridge-nf-call-iptables=1
+ALL MACHINES /etc/sysctl.conf:
+vm.max_map_count=262144
+net.bridge.bridge-nf-call-iptables=1
 net.ipv4.ip_forward = 1
+
+CENTOS:
+edit secure_path in /etc/sudoers to include /usr/local/bin
 
 sudo su -
 
+
+setup shared storage. Example Gluster (from https://launchpad.net/~gluster):
+
+on gluster server:
+sudo add-apt-repository ppa:gluster/glusterfs-3.12
+sudo apt-get update
+sudo apt-get install glusterfs-server
+CENTOS:
+yum -y install centos-release-gluster
+yum -y install glusterfs-server
+systemctl enable glusterd.service
+systemctl start glusterd.service
+
+on nodes:
+sudo add-apt-repository ppa:gluster/glusterfs-3.12
+sudo apt-get update
+sudo apt-get install glusterfs-client
+CENTOS:
+yum -y install centos-release-gluster
+yum -y install glusterfs
+yum -y install glusterfs-fuse
+
+# glusterfs uses /var/lib/glusterd for state
+# Make gluster storage volume:
+
+parted -s /dev/xvdz mklabel msdos
+parted -s /dev/xvdz mkpart primary 1 100%
+
+mkfs.xfs -i size=512 /dev/xvdz1
+mkdir -p /data/brick1
+echo '/dev/xvdz1 /data/brick1 xfs defaults 1 2' >> /etc/fstab
+mount -a && mount
+
+# let firewall accept all traffic from other nodes:
+# iptables -I INPUT -p all -s <peer ip-address> -j ACCEPT
+# configure trusted pool on each server:  gluster peer probe <peer>
+
+# on each server make subdir:
+mkdir -p /data/brick1/gv0
+mkdir -p /data/brick1/gv1
+mkdir -p /data/brick1/gv2
+mkdir -p /data/brick1/gv3
+mkdir -p /data/brick1/gv4
+
+# on any one of the servers create volume:
+#gluster volume create gv0 replica 2 server1:/data/brick1/gv0 server2:/data/brick1/gv0
+#gluster volume create gv1 replica 2 server1:/data/brick1/gv1 server2:/data/brick1/gv1
+#gluster volume create gv2 replica 2 server1:/data/brick1/gv2 server2:/data/brick1/gv2
+#gluster volume create gv3 replica 2 server1:/data/brick1/gv3 server2:/data/brick1/gv3
+#gluster volume create gv4 replica 2 server1:/data/brick1/gv4 server2:/data/brick1/gv4
+gluster volume create gv0 192.168.1.10:/data/brick1/gv0 force
+gluster volume create gv1 192.168.1.10:/data/brick1/gv1 force
+gluster volume create gv2 192.168.1.10:/data/brick1/gv2 force
+gluster volume create gv3 192.168.1.10:/data/brick1/gv3 force
+gluster volume create gv4 192.168.1.10:/data/brick1/gv4 force
+gluster volume start gv0
+gluster volume start gv1
+gluster volume start gv2
+gluster volume start gv3
+gluster volume start gv4
+gluster volume info
+# test it
+# mount -t glusterfs server1:/gv0 /mnt
+
+chown 2000 /data/brick1/gv0
+
+
+# OR RUN gluster in pods! https://github.com/gluster/gluster-kubernetes
+
+
+############## KUBEADM ########################
 apt-get update && apt-get install -y apt-transport-https
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
@@ -91,6 +165,41 @@ wait until stabilized
 
 
 If you are using VirtualBox (directly or via Vagrant), you will need to ensure that hostname -i returns a routable IP address. also the first ethernet adapter should be a cluster-reachable one (internal network)
+#################### KUBEADM END #################################
+
+
+############### RANCHER 2.0 #####################
+on master:
+mkdir -p /opt/rancher/mysql
+sudo docker run -d --restart=unless-stopped -v /opt/rancher/mysql:/var/lib/mysql -p 8080:8080 rancher/server:preview
+do the rest from the web interface
+
+
+
+add the glusterfs endpoints (server addresses)
+kubectl create -f glusterfs-endpoints.json
+verify:
+kubectl get endpoints
+
+# create a service for the glusterfs endpoints so that they will persist:
+kubectl create -f glusterfs-service.json
+
+
+# To use glusterfs storage in a pod (path is glusterfs volume name):
+#"volumes": [
+#  {
+#    "name": "glusterfsvol",
+#    "glusterfs": {
+#      "endpoints": "glusterfs-cluster",
+#      "path": "kube_vol",
+#      "readWrite": true
+#    }
+#  }
+#]
+
+# to see if gluster volumes are used:
+#kubectl exec glusterfs -- mount | grep gluster
+
 
 For allowing pods to be scheduled on master itself:
 kubectl taint nodes --all node-role.kubernetes.io/master-
@@ -129,98 +238,6 @@ kubectl proxy
 
 make a tunnel and access it as localhost:
 http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/
-
-setup shared storage. Example Gluster (from https://launchpad.net/~gluster):
-
-on gluster server:
-sudo add-apt-repository ppa:gluster/glusterfs-3.12
-sudo apt-get update
-sudo apt-get install glusterfs-server
-CENTOS:
-yum -y install centos-release-gluster
-yum -y install glusterfs-server
-systemctl enable glusterd.service
-systemctl start glusterd.service
-
-on nodes:
-sudo add-apt-repository ppa:gluster/glusterfs-3.12
-sudo apt-get update
-sudo apt-get install glusterfs-client
-CENTOS:
-yum -y install centos-release-gluster
-yum -y install glusterfs
-yum -y install glusterfs-fuse
-
-# glusterfs uses /var/lib/glusterd for state
-# Make gluster storage volume:
-
-parted -s /dev/xvdz mklabel msdos
-parted -s /dev/xvdz mkpart primary 1 100%
-
-mkfs.xfs -i size=512 /dev/xvdz1
-mkdir -p /data/brick1
-echo '/dev/xvdz1 /data/brick1 xfs defaults 1 2' >> /etc/fstab
-mount -a && mount
-
-# let firewall accept all traffic from other nodes:
-# iptables -I INPUT -p all -s <peer ip-address> -j ACCEPT
-# configure trusted pool on each server:  gluster peer probe <peer>
-
-# on each server make subdir:
-mkdir -p /data/brick1/gv0
-mkdir -p /data/brick1/gv1
-mkdir -p /data/brick1/gv2
-mkdir -p /data/brick1/gv3
-mkdir -p /data/brick1/gv4
-
-# on any one of the servers create volume:
-#gluster volume create gv0 replica 2 server1:/data/brick1/gv0 server2:/data/brick1/gv0
-#gluster volume create gv1 replica 2 server1:/data/brick1/gv1 server2:/data/brick1/gv1
-#gluster volume create gv2 replica 2 server1:/data/brick1/gv2 server2:/data/brick1/gv2
-#gluster volume create gv3 replica 2 server1:/data/brick1/gv3 server2:/data/brick1/gv3
-#gluster volume create gv4 replica 2 server1:/data/brick1/gv4 server2:/data/brick1/gv4
-gluster volume create gv0 192.168.1.10:/data/brick1/gv0
-gluster volume create gv1 192.168.1.10:/data/brick1/gv1
-gluster volume create gv2 192.168.1.10:/data/brick1/gv2
-gluster volume create gv3 192.168.1.10:/data/brick1/gv3
-gluster volume create gv4 192.168.1.10:/data/brick1/gv4
-gluster volume start gv0
-gluster volume start gv1
-gluster volume start gv2
-gluster volume start gv3
-gluster volume start gv4
-gluster volume info
-# test it
-# mount -t glusterfs server1:/gv0 /mnt
-
-chown 2000 /data/brick1/gv0
-
-add the glusterfs endpoints (server addresses)
-kubectl create -f glusterfs-endpoints.json
-verify:
-kubectl get endpoints
-
-# create a service for the glusterfs endpoints so that they will persist:
-kubectl create -f glusterfs-service.json
-
-
-# To use glusterfs storage in a pod (path is glusterfs volume name):
-#"volumes": [
-#  {
-#    "name": "glusterfsvol",
-#    "glusterfs": {
-#      "endpoints": "glusterfs-cluster",
-#      "path": "kube_vol",
-#      "readWrite": true
-#    }
-#  }
-#]
-
-# to see if gluster volumes are used:
-#kubectl exec glusterfs -- mount | grep gluster
-
-
-# OR RUN gluster in pods! https://github.com/gluster/gluster-kubernetes
 
 build custom Kibana-image to support Logtrail from Kibana dockerfile on every node as "localhost/kibana-logtrail:6.1.0"
 docker build -t localhost/kibana-logtrail:6.1.0 kibana
