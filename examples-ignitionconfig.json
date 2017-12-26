@@ -1,0 +1,20 @@
+{
+  "ignition": {
+    "config": {},
+    "timeouts": {},
+    "version": "2.1.0"
+  },
+  "networkd": {},
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaKfInKcxJrpLRondVeEA3/f8QWY+rrM0WYg+BZYgOvhiiyTi68f/aX69w6cFsgwUY6DDmAeZIiJAU1kWhPGcTS7fNaJ4KKgmqw0MOMSG4WD34hDIqkKEMAiBcTs4odDvRZJy715AjXE2yi8Np1dBFSk0/ek7KwexUStZdaujIntmwytsUHNQY3SkJZWLLf4ABTk6U/LvLT11n/FFATWdXn3zwXEO0eKwlgV2oKvAANu1FKWz2Ia51YEBrC9TVDRXqXvEvkDDzYqXnIThyWhxjrviKSg/Q7z1wpw3Xucc1n3NyFPlD2U1TctP3P7nYswnqcln6d0YWblMs6P3j+I0b frank@Franks-iMac.local"
+        ]
+      }
+    ]
+  },
+  "storage": {},
+  "systemd": {}
+}

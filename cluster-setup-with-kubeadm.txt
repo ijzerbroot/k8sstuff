@@ -38,6 +38,83 @@ edit secure_path in /etc/sudoers to include /usr/local/bin
 
 sudo su -
 
+#### COREOS ######
+
+
+add static interface:
+
+sudo echo '[Match]
+Name=enp0s9
+
+[Network]
+Address=192.168.1.10/24
+Gateway=192.168.56.1
+
+' > /etc/systemd/network/static.network
+
+sudo systemctl restart systemd-networkd
+
+
+#!/bin/bash
+set -o nounset -o errexit
+
+RELEASE="$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)"
+CNI_VERSION="v0.6.0"
+
+mkdir -p /opt/bin
+cd /opt/bin
+curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/amd64/{kubeadm,kubelet,kubectl}
+chmod +x {kubeadm,kubelet,kubectl}
+
+mkdir -p /opt/cni/bin
+curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-amd64-${CNI_VERSION}.tgz" | tar -C /opt/cni/bin -xz
+
+BRANCH="release-$(cut -f1-2 -d .<<< "${RELEASE##v}")"
+cd "/etc/systemd/system/"
+curl -L "https://raw.githubusercontent.com/kubernetes/kubernetes/${BRANCH}/build/debs/kubelet.service" | sed 's:/usr/bin:/opt/bin:g' > kubelet.service
+mkdir -p "/etc/systemd/system/kubelet.service.d"
+cd "/etc/systemd/system/kubelet.service.d"
+curl -L "https://raw.githubusercontent.com/kubernetes/kubernetes/${BRANCH}/build/debs/10-kubeadm.conf" | sed 's:/usr/bin:/opt/bin:g' > 10-kubeadm.conf
+
+sudo hostnamectl set-hostname k8smaster
+sudo bash -c "echo '192.168.1.10 k8smaster.localdomain k8smaster' >> /etc/hosts"
+
+sudo kubeadm init --apiserver-advertise-address=192.168.1.10 --pod-network-cidr=10.244.0.0/16
+sudo kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+sudo systemctl enable docker kubelet
+
+sudo su
+
+mkdir -p /etc/glusterfs
+mkdir -p /var/lib/glusterd
+mkdir -p /var/log/glusterfs
+mkdir -p /data
+
+#sudo docker run -v /etc/glusterfs:/etc/glusterfs:z --name gluster -v /var/lib/glusterd:/var/lib/glusterd:z -v /var/log/glusterfs:/var/log/glusterfs:z -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /data:/data -d --privileged=true --net=host --restart always -v /dev/:/dev gluster/gluster-centos
+
+install something such as rook for hyperconverged CEPH storage or run an NFS server
+
+sudo docker run -v /etc/glusterfs:/etc/glusterfs:z --name ganesha -v /var/lib/glusterd:/var/lib/glusterd:z -v /var/log/glusterfs:/var/log/glusterfs:z -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /data:/nfsdata -d --privileged=true --net=host --restart always -v /dev/:/dev -e GANESHA_EXPORT=/nfsdata -e GANESHA_ACCESS=192.168.1.0/24 -e GANESHA_ROOT_ACCESS=192.168.1.0/24 mitcdh/nfs-ganesha
+
+sudo docker exec -ti gluster sh
+gluster volume create gv0 192.168.1.10:/data/brick1/gv0 force
+gluster volume create gv1 192.168.1.10:/data/brick1/gv1 force
+gluster volume create gv2 192.168.1.10:/data/brick1/gv2 force
+gluster volume create gv3 192.168.1.10:/data/brick1/gv3 force
+gluster volume create gv4 192.168.1.10:/data/brick1/gv4 force
+gluster volume start gv0
+gluster volume start gv1
+gluster volume start gv2
+gluster volume start gv3
+gluster volume start gv4
+gluster volume set gv0 nfs.disable off
+gluster volume set gv1 nfs.disable off
+gluster volume set gv2 nfs.disable off
+gluster volume set gv3 nfs.disable off
+gluster volume set gv4 nfs.disable off
+gluster volume info
+
+
 
 setup shared storage. Example Gluster (from https://launchpad.net/~gluster):
 
