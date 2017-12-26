@@ -24,10 +24,8 @@ spec:
       serviceAccountName: chronograf
       volumes:
         - name: chronografdata
-          glusterfs:
-            endpoints: glusterfs-cluster
-            path: gv4
-            readOnly: false
+          persistentVolumeClaim:
+            claimName: chronograf-claim
       containers:
 #        - image: docker.elastic.co/kibana/kibana-oss:6.1.0
         - image: chronograf:1.3
