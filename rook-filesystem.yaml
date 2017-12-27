@@ -2,7 +2,7 @@ apiVersion: rook.io/v1alpha1
 kind: Filesystem
 metadata:
   name: bigfs
-  namespace: rook
+  namespace: rook-system
 spec:
   # The metadata pool spec
   metadataPool:

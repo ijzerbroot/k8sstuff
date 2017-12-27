@@ -2,7 +2,7 @@ apiVersion: rook.io/v1alpha1
 kind: Pool
 metadata:
   name: replicapool
-  namespace: rook
+  namespace: rook-system
 spec:
   replicated:
     size: 1
