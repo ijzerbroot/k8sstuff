@@ -66,6 +66,7 @@ kubectl create -f telegraf-serviceaccount.yaml
 kubectl create -f tgconfig.yaml
 kubectl create -f telegraf-ds.yaml
 
+kubectl delete -f kapacitor-service.yaml
 kubectl delete -f kapacitor-deployment.yaml
 kubectl delete -f kapacitor-config.yaml
 kubectl delete -f kapacitor-serviceaccount.yaml
@@ -77,6 +78,7 @@ kubectl create -f kapacitor-rolebinding.yaml
 kubectl create -f kapacitor-serviceaccount.yaml
 kubectl create -f kapacitor-config.yaml
 kubectl create -f kapacitor-deployment.yaml
+kubectl create -f kapacitor-service.yaml
 
 kubectl delete -f chronograf-ingress.yaml
 kubectl delete -f chronograf-service.yaml

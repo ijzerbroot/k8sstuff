@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kapacitor
+  namespace: default
+  labels:
+    k8s-app: influxdb
+    kubernetes.io/name: "InfluxDB"
+spec:
+  ports:
+  - port: 9092
+    protocol: TCP
+    targetPort: kapacitorport
+  selector:
+    k8s-app: kapacitor

@@ -27,6 +27,7 @@ kubectl delete -f telegraf-serviceaccount.yaml
 kubectl delete -f telegraf-rolebinding.yaml
 kubectl delete -f telegraf-role.yaml
 
+kubectl delete -f kapacitor-service.yaml
 kubectl delete -f kapacitor-deployment.yaml
 kubectl delete -f kapacitor-config.yaml
 kubectl delete -f kapacitor-serviceaccount.yaml
