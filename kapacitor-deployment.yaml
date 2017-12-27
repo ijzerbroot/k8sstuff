@@ -24,10 +24,13 @@ spec:
       serviceAccountName: kapacitor
       volumes:
         - name: kapacitordata
-          glusterfs:
-            endpoints: glusterfs-cluster
-            path: gv3
-            readOnly: false
+          flexVolume:
+            driver: rook.io/rook
+            fsType: ceph
+            options:
+              fsName: bigfs
+              clusterName: rook
+              path: /kapacitor
         - name: kconfig
           configMap:
             name: kapacitorconfigmap

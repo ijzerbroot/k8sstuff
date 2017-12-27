@@ -24,8 +24,13 @@ spec:
       serviceAccountName: chronograf
       volumes:
         - name: chronografdata
-          persistentVolumeClaim:
-            claimName: chronograf-claim
+          flexVolume:
+            driver: rook.io/rook
+            fsType: ceph
+            options:
+              fsName: bigfs
+              clusterName: rook
+              path: /chronograf
       containers:
 #        - image: docker.elastic.co/kibana/kibana-oss:6.1.0
         - image: chronograf:1.3

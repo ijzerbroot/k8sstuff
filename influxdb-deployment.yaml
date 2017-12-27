@@ -22,24 +22,23 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: influxdb
-      volumes: [
-        {
-          "name": "influxdbmeta",
-          "glusterfs": {
-            "endpoints": "glusterfs-cluster",
-            "path": "gv1",
-            "readOnly": false
-            }
-        },
-        {
-          "name": "influxdbdata",
-          "glusterfs": {
-            "endpoints": "glusterfs-cluster",
-            "path": "gv2",
-            "readOnly": false
-            }
-        }
-      ]
+      volumes:
+        - name: influxdbmeta
+          flexVolume:
+            driver: rook.io/rook
+            fsType: ceph
+            options:
+              fsName: bigfs
+              clusterName: rook
+              path: /influxdbmeta
+        - name: influxdbdata
+          flexVolume:
+            driver: rook.io/rook
+            fsType: ceph
+            options:
+              fsName: bigfs
+              clusterName: rook
+              path: /influxdbdata
       containers:
 #        - image: docker.elastic.co/kibana/kibana-oss:6.1.0
         - image: influxdb:1.4
