@@ -80,7 +80,9 @@ sudo hostnamectl set-hostname k8smaster
 sudo bash -c "echo '192.168.1.10 k8smaster.localdomain k8smaster' >> /etc/hosts"
 
 sudo kubeadm init --apiserver-advertise-address=192.168.1.10 --pod-network-cidr=10.244.0.0/16
-sudo kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+export kubever=$(kubectl version | base64 | tr -d '\n')
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+#sudo kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
 sudo systemctl enable docker kubelet
 
 sudo su
@@ -94,6 +96,15 @@ mkdir -p /data/rook
 #sudo docker run -v /etc/glusterfs:/etc/glusterfs:z --name gluster -v /var/lib/glusterd:/var/lib/glusterd:z -v /var/log/glusterfs:/var/log/glusterfs:z -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /data:/data -d --privileged=true --net=host --restart always -v /dev/:/dev gluster/gluster-centos
 
 install something such as rook for hyperconverged CEPH storage or run an NFS server (Ganesha)
+
+add following to /etc/systemd/system/kubelet.service.d/10-kubeadm.conf and restart
+--volume-plugin-dir=/var/lib/kubelet/volumeplugins
+sudo mkdir -p /var/lib/kubelet/volumeplugins
+sudo rm -rf /var/lib/rook/*
+kubectl create -f rook-operator.yaml
+kubectl create -f rook-cluster.yaml
+kubectl create -f rook-storageclass.yaml
+kubectl create -f rook-filesystem.yaml
 
 sudo docker run -v /etc/glusterfs:/etc/glusterfs:z --name ganesha -v /var/lib/glusterd:/var/lib/glusterd:z -v /var/log/glusterfs:/var/log/glusterfs:z -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /data:/nfsdata -d --privileged=true --net=host --restart always -v /dev/:/dev -e GANESHA_EXPORT=/nfsdata -e GANESHA_ACCESS=192.168.1.0/24 -e GANESHA_ROOT_ACCESS=192.168.1.0/24 mitcdh/nfs-ganesha
 
