@@ -28,9 +28,9 @@ spec:
             driver: rook.io/rook
             fsType: ceph
             options:
-              fsName: elasticsearchdata
+              fsName: bigfs
               clusterName: rook
-#              path: elasticsearchdata
+              path: /elasticsearchdata
 #      volumes:
 #        - name: elasticsearch-logging
 #          persistentVolumeClaim:
