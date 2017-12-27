@@ -30,7 +30,7 @@ spec:
             options:
               fsName: bigfs
               clusterName: rook
-              path: /elasticsearch
+              path: elasticsearchdata
 #      volumes:
 #        - name: elasticsearch-logging
 #          persistentVolumeClaim:
