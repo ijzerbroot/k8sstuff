@@ -342,7 +342,10 @@ kubectl delete -f es-deployment.yml
 kubectl delete -f es-serviceaccount.yml
 kubectl delete -f es-clusterrolebinding.yml
 kubectl delete -f es-clusterrole.yml
+kubectl delete -f es-filesystem.yaml
 
+kubectl create -f es-filesystem.yaml
+-- wait until provisioned (kubectl get pods -n rook | grep elast)
 kubectl create -f es-clusterrole.yml
 kubectl create -f es-clusterrolebinding.yml
 kubectl create -f es-serviceaccount.yml
