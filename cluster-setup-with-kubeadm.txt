@@ -334,6 +334,14 @@ http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboar
 build custom Kibana-image to support Logtrail from Kibana dockerfile on every node as "localhost/kibana-logtrail:6.1.0"
 docker build -t localhost/kibana-logtrail:6.1.0 kibana
 
+kubectl create -f rook-toolbox.yaml
+make mountpoints in bigfs
+
+kubectl -n rook exec -it rook-tools bash
+rookctl filesystem ls
+rookctl filesystem mount --name bigfs --path /tmp/rookFS
+mkdir /tmp/rookFS/elasticsearch
+chown 2000 /tmp/rookFS/elasticsearch
 monitoring:
 
 kubectl delete -f es-ingress.yaml
