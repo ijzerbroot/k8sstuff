@@ -106,6 +106,9 @@ kubectl create -f rook-cluster.yaml
 kubectl create -f rook-storageclass.yaml
 kubectl create -f rook-filesystem.yaml
 
+sudo mkdir -p /data/rook/elasticsearch
+chown 2000 /data/rook/elasticsearch
+
 sudo docker run -v /etc/glusterfs:/etc/glusterfs:z --name ganesha -v /var/lib/glusterd:/var/lib/glusterd:z -v /var/log/glusterfs:/var/log/glusterfs:z -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /data:/nfsdata -d --privileged=true --net=host --restart always -v /dev/:/dev -e GANESHA_EXPORT=/nfsdata -e GANESHA_ACCESS=192.168.1.0/24 -e GANESHA_ROOT_ACCESS=192.168.1.0/24 mitcdh/nfs-ganesha
 
 sudo docker exec -ti gluster sh

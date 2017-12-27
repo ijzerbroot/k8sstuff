@@ -24,8 +24,13 @@ spec:
       serviceAccountName: elasticsearch
       volumes:
         - name: elasticsearchdata
-          persistentVolumeClaim:
-            claimName: esdataclaim
+          flexVolume:
+            driver: rook.io/rook
+            fsType: ceph
+            options:
+              fsName: bigfs
+              clusterName: rook
+              path: /elasticsearch
 #      volumes:
 #        - name: elasticsearch-logging
 #          persistentVolumeClaim:
