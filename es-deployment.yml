@@ -22,16 +22,10 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: elasticsearch
-      volumes: [
-        {
-          "name": "elasticsearch",
-          "glusterfs": {
-            "endpoints": "glusterfs-cluster",
-            "path": "gv0",
-            "readOnly": false
-          }
-        }
-      ]
+      volumes:
+        - name: elasticsearchdata
+          persistentVolumeClaim:
+            claimName: esdataclaim
 #      volumes:
 #        - name: elasticsearch-logging
 #          persistentVolumeClaim:
@@ -57,4 +51,4 @@ spec:
               protocol: TCP
           volumeMounts:
             - mountPath: /usr/share/elasticsearch/data
-              name: elasticsearch
+              name: elasticsearchdata

@@ -85,14 +85,15 @@ sudo systemctl enable docker kubelet
 
 sudo su
 
-mkdir -p /etc/glusterfs
-mkdir -p /var/lib/glusterd
-mkdir -p /var/log/glusterfs
-mkdir -p /data
+#mkdir -p /etc/glusterfs
+#mkdir -p /var/lib/glusterd
+#mkdir -p /var/log/glusterfs
+Alle nodes:
+mkdir -p /data/rook
 
 #sudo docker run -v /etc/glusterfs:/etc/glusterfs:z --name gluster -v /var/lib/glusterd:/var/lib/glusterd:z -v /var/log/glusterfs:/var/log/glusterfs:z -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /data:/data -d --privileged=true --net=host --restart always -v /dev/:/dev gluster/gluster-centos
 
-install something such as rook for hyperconverged CEPH storage or run an NFS server
+install something such as rook for hyperconverged CEPH storage or run an NFS server (Ganesha)
 
 sudo docker run -v /etc/glusterfs:/etc/glusterfs:z --name ganesha -v /var/lib/glusterd:/var/lib/glusterd:z -v /var/log/glusterfs:/var/log/glusterfs:z -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /data:/nfsdata -d --privileged=true --net=host --restart always -v /dev/:/dev -e GANESHA_EXPORT=/nfsdata -e GANESHA_ACCESS=192.168.1.0/24 -e GANESHA_ROOT_ACCESS=192.168.1.0/24 mitcdh/nfs-ganesha
 
