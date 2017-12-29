@@ -40,6 +40,7 @@ data:
     - type: log
       paths:
         - /var/lib/docker/containers/*/*.log
+      exclude_lines: ['influxdb','filebeater','kibana','telegraf','HTTP/1.1" 2','^\[I\]','json.go:32: ERR Error decoding JSON','metrics.go:39','chronograf','level=info msg=','"url":"/logtrail']
       json.message_key: log
       json.keys_under_root: true
       processors:
