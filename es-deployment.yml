@@ -22,6 +22,18 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: elasticsearch
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: role
+                  operator: In
+                  values:
+                  - storage-node
+              topologyKey: "kubernetes.io/hostname"
       volumes:
         - name: elasticsearchdata
           flexVolume:
