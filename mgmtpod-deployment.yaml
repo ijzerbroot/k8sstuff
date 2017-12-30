@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mgmtpod
+  namespace: default
+  labels:
+    k8s-app: mgmtpod
+    version: v1
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: mgmtpod
+      version: v1
+  template:
+    metadata:
+      labels:
+        k8s-app: mgmtpod
+        version: v1
+        kubernetes.io/cluster-service: "true"
+    spec:
+      serviceAccountName: mgmtpod
+      containers:
+#        - image: docker.elastic.co/kibana/kibana-oss:6.1.0
+        - image: fedora:27
+          name: mgmtpod
+          command: ["sleep","infinity"]
+          resources:
+            # need more cpu upon initialization, therefore burstable class
+            limits:
+              cpu: 1000m
+            requests:
+              cpu: 100m
+      restartPolicy: Always
