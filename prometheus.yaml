@@ -203,3 +203,20 @@ spec:
   selector:
     name: prometheus
   type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: elasticsearch-ui
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: prometheus.lift
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: prometheus
+            servicePort: 9090
