@@ -158,8 +158,8 @@ spec:
       containers:
       - args:
         - --config.file=/etc/prometheus/prometheus.yml
-        - --storage.local.path=/prometheus
-        - --storage.local.retention=24h
+#        - --storage.local.path=/prometheus
+#        - --storage.local.retention=24h
         command:
         - /bin/prometheus
         image: quay.io/prometheus/prometheus:v2.0.0
