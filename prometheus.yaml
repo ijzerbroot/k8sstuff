@@ -207,7 +207,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: elasticsearch-ui
+  name: prometheus-ui
   namespace: monitoring
   annotations:
     kubernetes.io/ingress.class: traefik
