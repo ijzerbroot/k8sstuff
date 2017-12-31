@@ -2,6 +2,8 @@
 
 sudo ls
 
+kubectl delete -f grafana.yaml
+
 kubectl delete -f es-ingress.yaml
 kubectl delete -f es-service.yml
 kubectl delete -f es-deployment.yml

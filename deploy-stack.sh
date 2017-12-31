@@ -108,7 +108,8 @@ kubectl create -f kibana-deployment.yaml
 kubectl create -f kibana-service.yaml
 kubectl create -f kibana-ingress.yaml
 
+kubectl delete -f grafana.yaml
+kubectl create -f grafana.yaml
+
 kubectl create -f https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/cluster-monitoring/heapster-rbac.yaml
 kubectl create -f https://github.com/kubernetes/heapster/blob/master/deploy/kube-config/influxdb/heapster.yaml
-kubectl create -f
-kubectl create -f https://github.com/kubernetes/heapster/blob/master/deploy/kube-config/influxdb/grafana.yaml

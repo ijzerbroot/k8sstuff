@@ -345,6 +345,7 @@ mkdir /tmp/rookFS/chronograf
 mkdir /tmp/rookFS/influxdbmeta
 mkdir /tmp/rookFS/influxdbdata
 mkdir /tmp/rookFS/kapacitor
+mkdir /tmp/grafana
 monitoring:
 
 kubectl delete -f es-ingress.yaml
