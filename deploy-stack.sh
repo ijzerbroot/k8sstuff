@@ -10,106 +10,29 @@ kubectl apply --namespace kube-system -f "https://cloud.weave.works/k8s/scope.ya
 kubectl create -f weavescope-ingress.yaml
 
 #sudo docker build -t localhost/kibana-logtrail:6.1.0 kibana
-
-kubectl delete -f es-ingress.yaml
-kubectl delete -f es-service.yml
-kubectl delete -f es-deployment.yml
-kubectl delete -f es-serviceaccount.yml
-kubectl delete -f es-clusterrolebinding.yml
-kubectl delete -f es-clusterrole.yml
-
-kubectl create -f es-clusterrole.yml
-kubectl create -f es-clusterrolebinding.yml
-kubectl create -f es-serviceaccount.yml
-kubectl create -f es-deployment.yml
-kubectl create -f es-service.yml
-kubectl create -f es-ingress.yaml
-
-kubectl create -f logstash-config.yaml
-kubectl create -f logstashyaml-config.yaml
-kubectl create -f logstash-deployment.yaml
-kubectl create -f logstash-service.yaml
-
-kubectl delete -f filebeat-ds.yaml
-kubectl delete -f filebeat-config.yaml
-kubectl delete -f filebeat-serviceaccount.yaml
-kubectl delete -f filebeat-rolebinding.yaml
-kubectl delete -f filebeat-role.yaml
-
-kubectl create -f filebeat-role.yaml
-kubectl create -f filebeat-rolebinding.yaml
-kubectl create -f filebeat-serviceaccount.yaml
-kubectl create -f filebeat-config.yaml
-kubectl create -f filebeat-ds.yaml
-
-kubectl delete -f influxdb-service.yaml
-kubectl delete -f influxdb-deployment.yaml
-kubectl delete -f influxdb-serviceaccount.yaml
-kubectl delete -f influxdb-rolebinding.yaml
-kubectl delete -f influxdb-role.yaml
-
-kubectl create -f influxdb-role.yaml
-kubectl create -f influxdb-rolebinding.yaml
-kubectl create -f influxdb-serviceaccount.yaml
-kubectl create -f influxdb-deployment.yaml
-kubectl create -f influxdb-service.yaml
-
-kubectl delete -f telegraf-ds.yaml
-kubectl delete -f tgconfig.yaml
-kubectl delete -f telegraf-serviceaccount.yaml
-kubectl delete -f telegraf-rolebinding.yaml
-kubectl delete -f telegraf-role.yaml
-
-kubectl create -f telegraf-role.yaml
-kubectl create -f telegraf-rolebinding.yaml
-kubectl create -f telegraf-serviceaccount.yaml
-kubectl create -f tgconfig.yaml
-kubectl create -f telegraf-ds.yaml
-
-kubectl delete -f kapacitor-service.yaml
-kubectl delete -f kapacitor-deployment.yaml
-kubectl delete -f kapacitor-config.yaml
-kubectl delete -f kapacitor-serviceaccount.yaml
-kubectl delete -f kapacitor-rolebinding.yaml
-kubectl delete -f kapacitor-role.yaml
-
-kubectl create -f kapacitor-role.yaml
-kubectl create -f kapacitor-rolebinding.yaml
-kubectl create -f kapacitor-serviceaccount.yaml
-kubectl create -f kapacitor-config.yaml
-kubectl create -f kapacitor-deployment.yaml
-kubectl create -f kapacitor-service.yaml
-
-kubectl delete -f chronograf-ingress.yaml
-kubectl delete -f chronograf-service.yaml
-kubectl delete -f chronograf-deployment.yaml
-kubectl delete -f chronograf-serviceaccount.yaml
-kubectl delete -f chronograf-rolebinding.yaml
-kubectl delete -f chronograf-role.yaml
-
-kubectl create -f chronograf-role.yaml
-kubectl create -f chronograf-rolebinding.yaml
-kubectl create -f chronograf-serviceaccount.yaml
-kubectl create -f chronograf-deployment.yaml
-kubectl create -f chronograf-service.yaml
-kubectl create -f chronograf-ingress.yaml
-
-kubectl delete -f kibana-ingress.yaml
-kubectl delete -f kibana-service.yaml
-kubectl delete -f kibana-deployment.yaml
-kubectl delete -f kibana-serviceaccount.yaml
-kubectl delete -f kibana-clusterrolebinding.yaml
-kubectl delete -f kibana-clusterrole.yaml
-
-kubectl create -f kibana-clusterrole.yaml
-kubectl create -f kibana-clusterrolebinding.yaml
-kubectl create -f kibana-serviceaccount.yaml
-kubectl create -f kibana-deployment.yaml
-kubectl create -f kibana-service.yaml
-kubectl create -f kibana-ingress.yaml
+sudo ls
 
 kubectl delete -f grafana.yaml
-kubectl create -f grafana.yaml
+kubectl delete -f kibana.yaml
+kubectl delete -f telegraf.yaml
+kubectl delete -f filebeat.yaml
+kubectl delete -f chronograf.yaml
+kubectl delete -f kapacitor.yaml
+kubectl delete -f influxdb.yaml
+kubectl delete -f elasticsearch.yaml
+kubectl delete -f traefik.yaml
+kubectl delete -f heapster.yaml
 
-kubectl create -f https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/cluster-monitoring/heapster-rbac.yaml
-kubectl create -f https://github.com/kubernetes/heapster/blob/master/deploy/kube-config/influxdb/heapster.yaml
+kubectl create -f grafana.yaml
+kubectl create -f kibana.yaml
+kubectl create -f telegraf.yaml
+kubectl create -f filebeat.yaml
+kubectl create -f chronograf.yaml
+kubectl create -f kapacitor.yaml
+kubectl create -f influxdb.yaml
+kubectl create -f elasticsearch.yaml
+kubectl create -f traefik.yaml
+kubectl create -f heapster.yaml
+
+#kubectl create -f https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/cluster-monitoring/heapster-rbac.yaml
+#kubectl create -f https://github.com/kubernetes/heapster/blob/master/deploy/kube-config/influxdb/heapster.yaml

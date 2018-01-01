@@ -1,0 +1,196 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kapacitorconfigmap
+data:
+  kapacitor.conf: |-
+    hostname = "kapacitor"
+    data_dir = "/var/lib/kapacitor"
+
+    [http]
+      # HTTP API Server for Kapacitor
+      # This server is always on,
+      # it serves both as a write endpoint
+      # and as the API endpoint for all other
+      # Kapacitor calls.
+      bind-address = ":9092"
+      log-enabled = true
+      write-tracing = false
+      pprof-enabled = false
+      https-enabled = false
+      https-certificate = "/etc/ssl/kapacitor.pem"
+
+    [config-override]
+      # Enable/Disable the service for overridding configuration via the HTTP API.
+      enabled = true
+
+    [logging]
+        # Destination for logs
+        # Can be a path to a file or 'STDOUT', 'STDERR'.
+        file = "/var/log/kapacitor/kapacitor.log"
+        # Logging level can be one of:
+        # DEBUG, INFO, WARN, ERROR, or OFF
+        level = "INFO"
+
+    [[influxdb]]
+      # Connect to an InfluxDB cluster
+      enabled = true
+      default = true
+      name = "influxdb"
+      urls = ["http://influxdb:8086"]
+      username = ""
+      password = ""
+      timeout = 0
+      insecure-skip-verify = false
+      startup-timeout = "5m"
+      disable-subscriptions = false
+      subscription-mode = "cluster"
+      subscription-protocol = "http"
+      subscriptions-sync-interval = "1m0s"
+      kapacitor-hostname = ""
+      http-port = 0
+      udp-bind = ""
+      udp-buffer = 1000
+      udp-read-buffer = 0
+
+      [influxdb.subscriptions]
+      [influxdb.excluded-subscriptions]
+
+    [slack]
+      enabled = false
+      # The Slack webhook URL, can be obtained by adding
+      # an Incoming Webhook integration.
+      # Visit https://slack.com/services/new/incoming-webhook
+      # to add new webhook for Kapacitor.
+      url = "YOU WEBHOOK URL HERE"
+      channel = "general"
+      global = false
+    state-changes-only = false
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: kapacitor
+  labels:
+    k8s-app: kapacitor
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "services"
+  - "namespaces"
+  - "endpoints"
+  verbs:
+  - "get"
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: default
+  name: kapacitor
+  labels:
+    k8s-app: influxdb
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+subjects:
+- kind: ServiceAccount
+  name: kapacitor
+  namespace: default
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: kapacitor
+  apiGroup: ""
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kapacitor
+  namespace: default
+  labels:
+    k8s-app: kapacitor
+    version: v1
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: kapacitor
+  namespace: default
+  labels:
+    k8s-app: kapacitor
+    version: v1
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: kapacitor
+      version: v1
+  template:
+    metadata:
+      labels:
+        k8s-app: kapacitor
+        version: v1
+        kubernetes.io/cluster-service: "true"
+    spec:
+      serviceAccountName: kapacitor
+      volumes:
+        - name: kapacitordata
+          flexVolume:
+            driver: rook.io/rook
+            fsType: ceph
+            options:
+              fsName: bigfs
+              clusterName: rook
+              path: /kapacitor
+        - name: kconfig
+          configMap:
+            name: kapacitorconfigmap
+            items:
+             - key: kapacitor.conf
+               path: kapacitor.conf
+            defaultMode: 0644
+#      volumes:
+#        - name: elasticsearch-logging
+#          persistentVolumeClaim:
+#            claimName: eslogging-claim
+      containers:
+        - image: kapacitor:1.4
+          name: kapacitor
+          resources:
+            # need more cpu upon initialization, therefore burstable class
+            limits:
+              cpu: 1000m
+            requests:
+              cpu: 100m
+          ports:
+            - containerPort: 9092
+              name: kapacitorport
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/kapacitor
+              name: kconfig
+            - mountPath: /var/lib/kapacitor
+              name: kapacitordata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kapacitor
+  namespace: default
+  labels:
+    k8s-app: influxdb
+    kubernetes.io/name: "InfluxDB"
+spec:
+  ports:
+  - port: 9092
+    protocol: TCP
+    targetPort: kapacitorport
+  selector:
+    k8s-app: kapacitor

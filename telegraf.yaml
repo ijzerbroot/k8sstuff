@@ -1,0 +1,135 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tgconfigmap
+data:
+  telegraf.conf: |-
+    # Read metrics about CPU usage
+    [[inputs.cpu]]
+      percpu = false
+      totalcpu = true
+      fieldpass = [ "usage*" ]
+      name_suffix = "_vm"
+
+    # Read metrics about disk usagee
+    [[inputs.disk]]
+      fielddrop = [ "inodes*" ]
+      mount_points=["/"]
+      name_suffix = "_vm"
+
+    # Read metrics about network usage
+    [[inputs.net]]
+      interfaces = [ "eth0" ]
+      fielddrop = [ "icmp*", "ip*", "tcp*", "udp*" ]
+      name_suffix = "_vm"
+
+    # Read metrics about memory usage
+    [[inputs.mem]]
+      name_suffix = "_vm"
+
+    # Read metrics about swap memory usage
+    [[inputs.swap]]
+      name_suffix = "_vm"
+
+    # Read metrics about system load & uptime
+    [[inputs.system]]
+      name_suffix = "_vm"
+
+    # Read metrics from docker socket api
+    [[inputs.docker]]
+      endpoint = "unix:///var/run/docker.sock"
+      container_names = []
+      name_suffix = "_docker"
+
+    [[outputs.influxdb]]
+      database = "vm_metrics"
+      urls = ["http://influxdb:8086"]
+      namepass = ["*_vm"]
+
+    [[outputs.influxdb]]
+      database = "docker_metrics"
+      urls = ["http://influxdb:8086"]
+    namepass = ["*_docker"]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: telegraf
+  labels:
+    k8s-app: telegraf
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources:
+  - namespaces
+  - pods
+  verbs:
+  - get
+  - watch
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: telegraf
+subjects:
+- kind: ServiceAccount
+  name: telegraf
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: telegraf
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: telegraf
+  namespace: default
+  labels:
+    k8s-app: telegraf
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: telegraf
+  namespace: default
+  labels:
+    k8s-app: telegraf
+    kubernetes.io/cluster-service: "true"
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: telegraf
+        kubernetes.io/cluster-service: "true"
+    spec:
+      serviceAccountName: telegraf
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: docker-socket
+        hostPath:
+          path: /var/run/docker.sock
+      - name: tgconfig
+        configMap:
+          name: tgconfigmap
+          items:
+            - key: telegraf.conf
+              path: telegraf.conf
+      containers:
+      - name: telegraf
+        image: telegraf:1.5
+        securityContext:
+          runAsUser: 0
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - name: tgconfig
+          mountPath: /etc/telegraf
+          readOnly: true
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
