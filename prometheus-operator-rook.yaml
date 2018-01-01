@@ -118,12 +118,6 @@ spec:
     path: /metrics
     interval: 5s
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: prometheus-rook
-  namespace: rook
----
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -155,6 +149,12 @@ roleRef:
   name: prometheus-rook
 subjects:
 - kind: ServiceAccount
+  name: prometheus-rook
+  namespace: rook
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   name: prometheus-rook
   namespace: rook
 ---
