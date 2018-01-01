@@ -23,16 +23,17 @@ kubectl delete -f elasticsearch.yaml
 kubectl delete -f traefik.yaml
 kubectl delete -f heapster.yaml
 
+kubectl create -f heapster.yaml
+kubectl create -f elasticsearch.yaml
+kubectl create -f influxdb.yaml
+kubectl create -f kapacitor.yaml
 kubectl create -f grafana.yaml
 kubectl create -f kibana.yaml
 kubectl create -f telegraf.yaml
 kubectl create -f filebeat.yaml
 kubectl create -f chronograf.yaml
-kubectl create -f kapacitor.yaml
-kubectl create -f influxdb.yaml
-kubectl create -f elasticsearch.yaml
 kubectl create -f traefik.yaml
-kubectl create -f heapster.yaml
+
 
 #kubectl create -f https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/cluster-monitoring/heapster-rbac.yaml
 #kubectl create -f https://github.com/kubernetes/heapster/blob/master/deploy/kube-config/influxdb/heapster.yaml
