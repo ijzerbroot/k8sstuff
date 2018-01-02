@@ -88,6 +88,9 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: elasticsearch
+      securityContext:
+        runAsUser: 2000
+        fsGroup: 2000
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -106,11 +109,10 @@ spec:
             claimName: elasticsearch-data-claim
       containers:
         - image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.1
-          securityContext:
-            runAsUser: 0
-            fsGroup: 2000
 #            allowPrivilegeEscalation: false
           name: elasticsearch
+          securityContext:
+            allowPrivilegeEscalation: false
           resources:
             # need more cpu upon initialization, therefore burstable class
             limits:
