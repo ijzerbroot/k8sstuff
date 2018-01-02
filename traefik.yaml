@@ -42,13 +42,6 @@ metadata:
   name: traefik-ingress-controller
   namespace: kube-system
 ---
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: traefik-ingress-controller
-  namespace: kube-system
----
 kind: DaemonSet
 apiVersion: extensions/v1beta1
 metadata:
@@ -100,19 +93,6 @@ spec:
       port: 8080
       name: admin
   type: NodePort
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: traefik-web-ui
-  namespace: kube-system
-spec:
-  selector:
-    k8s-app: traefik-ingress-lb
-  ports:
-  - name: web
-    port: 80
-    targetPort: 8080
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress

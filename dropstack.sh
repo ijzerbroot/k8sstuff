@@ -11,3 +11,7 @@ kubectl delete -f kapacitor.yaml
 kubectl delete -f influxdb.yaml
 kubectl delete -f elasticsearch.yaml
 kubectl delete -f traefik.yaml
+kubectl delete -f kube-state-metrics.yaml
+kubectl delete -f heapster.yaml
+kubectl delete -f prometheus.yaml
+kubectl delete -f prometheus-operator-rook.yaml

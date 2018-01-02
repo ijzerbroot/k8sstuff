@@ -338,13 +338,13 @@ make mountpoints in bigfs
 
 kubectl -n rook exec -it rook-tools bash
 rookctl filesystem ls
-rookctl filesystem mount --name bigfs --path /tmp/rookFS
-mkdir /tmp/rookFS/elasticsearch
-chown 2000 /tmp/rookFS/elasticsearch
-mkdir /tmp/rookFS/chronograf
-mkdir /tmp/rookFS/influxdbmeta
-mkdir /tmp/rookFS/influxdbdata
-mkdir /tmp/rookFS/kapacitor
+rookctl filesystem mount --name bigfs --path /tmp/bigfs
+mkdir /tmp/bigfs/elasticsearch
+chown 2000 /tmp/bigfs/elasticsearch
+mkdir /tmp/bigfs/chronograf
+mkdir /tmp/bigfs/influxdbmeta
+mkdir /tmp/bigfs/influxdbdata
+mkdir /tmp/bigfs/kapacitor
 mkdir /tmp/grafana
 monitoring:
 
