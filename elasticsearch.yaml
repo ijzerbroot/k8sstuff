@@ -47,6 +47,21 @@ metadata:
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: elasticsearch-data-claim
+  namespace: default
+  labels:
+    k8s-app: elasticsearch
+spec:
+  storageClassName: rook-block
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -85,17 +100,8 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       volumes:
         - name: elasticsearchdata
-          flexVolume:
-            driver: rook.io/rook
-            fsType: ceph
-            options:
-              fsName: bigfs
-              clusterName: rook
-              path: /elasticsearch
-#      volumes:
-#        - name: elasticsearch-logging
-#          persistentVolumeClaim:
-#            claimName: eslogging-claim
+          persistentVolumeClaim:
+            claimName: elasticsearch-data-claim
       containers:
         - image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.1
           securityContext:
