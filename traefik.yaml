@@ -79,7 +79,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: traefik-ingress-service
+  name: traefik-web-ui
   namespace: kube-system
 spec:
   selector:
