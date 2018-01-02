@@ -16,7 +16,7 @@ kubectl delete -f grafana.yaml
 kubectl delete -f kibana.yaml
 kubectl delete -f telegraf.yaml
 kubectl delete -f filebeat.yaml
-kubectl delete -f fluentd.yaml
+kubectl delete -f fluentd-es.yaml
 kubectl delete -f fluentbit.yaml
 kubectl delete -f chronograf.yaml
 kubectl delete -f kapacitor.yaml
@@ -37,8 +37,8 @@ kubectl create -f grafana.yaml
 kubectl create -f kibana.yaml
 kubectl create -f telegraf.yaml
 #kubectl create -f filebeat.yaml
-#kubectl create -f fluentd.yaml
-kubectl delete -f fluentbit.yaml
+kubectl create -f fluentd-es.yaml
+#kubectl delete -f fluentbit.yaml
 kubectl create -f chronograf.yaml
 kubectl create -f traefik.yaml
 kubectl create -f prometheus.yaml
