@@ -6,6 +6,7 @@ kubectl delete -f grafana.yaml
 kubectl delete -f kibana.yaml
 kubectl delete -f telegraf.yaml
 kubectl delete -f filebeat.yaml
+kubectl delete -f fluentd.yaml
 kubectl delete -f chronograf.yaml
 kubectl delete -f kapacitor.yaml
 kubectl delete -f influxdb.yaml
