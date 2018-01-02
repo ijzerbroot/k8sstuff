@@ -8,3 +8,6 @@ data:
     [global]
     mon data avail crit = 3
     osd pool default size = 2
+    debug mds log 0/20
+    debug mds 0/20
+    debug mon 0/20
