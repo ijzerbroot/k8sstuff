@@ -73,7 +73,6 @@ spec:
         securityContext:
           privileged: true
         args:
-        - -d
         - --web
         - --kubernetes
 ---
