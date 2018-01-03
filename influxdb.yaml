@@ -71,6 +71,16 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: influxdb
+      affinity:
+# Make sure you have labelled the worker nodes with kubectl label nodes nodename role=worker-node
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - worker-node
       volumes:
         - name: influxdbmeta
           flexVolume:

@@ -92,17 +92,15 @@ spec:
         runAsUser: 2000
         fsGroup: 2000
       affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: role
-                  operator: In
-                  values:
-                  - storage-node
-              topologyKey: "kubernetes.io/hostname"
+# Make sure you have labelled the worker nodes with kubectl label nodes nodename role=worker-node
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - worker-node
       volumes:
         - name: elasticsearchdata
           persistentVolumeClaim:
