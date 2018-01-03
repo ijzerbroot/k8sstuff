@@ -91,7 +91,37 @@ data:
     [FILTER]
         Name           lift
         Match          *
-        Exclude        log "Running command: ceph osd"
+        Exclude        log "Running command: ceph"
+
+    [FILTER]
+        Name           lift
+        Match          *
+        Exclude        log "HTTP 1.1/\" 2"
+
+    [FILTER]
+        Name           lift
+        Match          *
+        Exclude        log "json.go:32: ERR Error decoding"
+
+    [FILTER]
+        Name           lift
+        Match          *
+        Exclude        log "kibana"
+
+    [FILTER]
+        Name           lift
+        Match          *
+        Exclude        log "chronograf"
+
+    [FILTER]
+        Name           lift
+        Match          *
+        Exclude        log "influxdb"
+
+    [FILTER]
+        Name           lift
+        Match          *
+        Exclude        log "/logtrail"    
 
   filter-kubernetes.conf: |
     [FILTER]
