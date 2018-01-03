@@ -4,6 +4,11 @@ metadata:
   name: rook-system
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: rook
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: rook-config-override
