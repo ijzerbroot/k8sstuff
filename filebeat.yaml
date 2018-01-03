@@ -56,6 +56,18 @@ data:
             when:
               contains:
                 kubernetes.labels.app: rook-ceph-mon
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.k8s-app: kibana
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.k8s-app: chronograf
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.k8s-app: grafana
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
