@@ -59,7 +59,15 @@ data:
         - drop_event:
             when:
               contains:
+                kubernetes.labels.app: rook-ceph-mgr
+        - drop_event:
+            when:
+              contains:
                 kubernetes.labels.k8s-app: kibana
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.k8s-app: filebeat
         - drop_event:
             when:
               contains:
