@@ -41,7 +41,7 @@ data:
     - type: log
       paths:
         - /var/lib/docker/containers/*/*.log
-      exclude_lines: ['json.go:32: ERR Error decoding JSON','"url":"/logtrail']
+      exclude_lines: ['json.go:32: ERR Error decoding JSON','"url":"/logtrail','Running command: ceph osd dump','\[DBG\]']
       json.message_key: log
       json.keys_under_root: true
       processors:
