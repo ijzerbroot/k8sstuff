@@ -41,7 +41,7 @@ data:
     - type: log
       paths:
         - /var/lib/docker/containers/*/*.log
-      exclude_lines: ['influxdb','filebeater','kibana','telegraf','HTTP/1.1" 2','^\[I\]','json.go:32: ERR Error decoding JSON','metrics.go:39','chronograf','level=info msg=','"url":"/logtrail','level=debug','replay_done','send_beacon active','update_stats avail','log \[DBG\]','exec: Running command: ceph','GetMetrics','handle_command mon_command','reply handle_command \(0\) Success','component=prometheusoperator']
+      exclude_lines: ['json.go:32: ERR Error decoding JSON','"url":"/logtrail']
       json.message_key: log
       json.keys_under_root: true
       processors:
@@ -52,6 +52,10 @@ data:
             when:
               contains:
                 kubernetes.labels.k8s-app: kube-state-metrics
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.app: rook-ceph-mon
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
