@@ -36,8 +36,8 @@ kubectl create -f kapacitor.yaml
 kubectl create -f grafana.yaml
 kubectl create -f kibana.yaml
 kubectl create -f telegraf.yaml
-#kubectl create -f filebeat.yaml
-kubectl create -f fluentd-es.yaml
+kubectl create -f filebeat.yaml
+#kubectl create -f fluentd-es.yaml
 #kubectl delete -f fluentbit.yaml
 kubectl create -f chronograf.yaml
 kubectl create -f traefik.yaml

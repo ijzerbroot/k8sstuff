@@ -3,7 +3,7 @@
     {
       "name": "DS_PROMETHEUS",
       "label": "Prometheus",
-      "description": "Compliant with Prometheus 1.5.2",
+      "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
@@ -11,65 +11,69 @@
   ],
   "__requires": [
     {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "4.6.3"
+    },
+    {
       "type": "panel",
       "id": "graph",
       "name": "Graph",
       "version": ""
     },
     {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
       "type": "panel",
       "id": "singlestat",
       "name": "Singlestat",
       "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "3.1.1"
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.3.0"
     }
   ],
-  "id": null,
-  "title": "Kubernetes cluster monitoring (via Prometheus)",
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
   "description": "Monitors Kubernetes cluster using Prometheus. Shows overall cluster CPU / Memory / Filesystem usage as well as individual pod, containers, systemd services statistics. Uses cAdvisor metrics only.",
-  "tags": [
-    "kubernetes"
-  ],
-  "style": "dark",
-  "timezone": "browser",
   "editable": true,
+  "gnetId": 1621,
+  "graphTooltip": 0,
   "hideControls": false,
-  "sharedCrosshair": false,
+  "id": null,
+  "links": [],
+  "refresh": "10s",
   "rows": [
     {
       "collapse": false,
-      "editable": true,
       "height": "200px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_PROMETHEUS}",
           "decimals": 2,
           "editable": true,
           "error": false,
           "fill": 1,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)",
-            "thresholdLine": false
-          },
+          "grid": {},
           "height": "200px",
           "id": 32,
-          "isNew": true,
           "legend": {
             "alignAsTable": false,
             "avg": true,
@@ -93,6 +97,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -116,6 +121,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "Network I/O pressure",
@@ -128,7 +134,11 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
-            "show": true
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
           "yaxes": [
             {
@@ -150,11 +160,15 @@
           ]
         }
       ],
-      "title": "Network I/O pressure"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Network I/O pressure",
+      "titleSize": "h6"
     },
     {
       "collapse": false,
-      "editable": true,
       "height": "250px",
       "panels": [
         {
@@ -180,7 +194,6 @@
           "height": "180px",
           "id": 4,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -214,6 +227,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "sum (container_memory_working_set_bytes{id=\"/\",kubernetes_io_hostname=~\"^$Node$\"}) / sum (machine_memory_bytes{kubernetes_io_hostname=~\"^$Node$\"}) * 100",
@@ -261,7 +275,6 @@
           "height": "180px",
           "id": 6,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -295,6 +308,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "sum (rate (container_cpu_usage_seconds_total{id=\"/\",kubernetes_io_hostname=~\"^$Node$\"}[1m])) / sum (machine_cpu_cores{kubernetes_io_hostname=~\"^$Node$\"}) * 100",
@@ -341,7 +355,6 @@
           "height": "180px",
           "id": 7,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -375,6 +388,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "sum (container_fs_usage_bytes{device=~\"^/dev/.*$\",id=\"/\",kubernetes_io_hostname=~\"^$Node$\"}) / sum (container_fs_limit_bytes{device=~\"^/dev/.*$\",id=\"/\",kubernetes_io_hostname=~\"^$Node$\"}) * 100",
@@ -423,7 +437,6 @@
           "height": "1px",
           "id": 9,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -457,6 +470,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "sum (container_memory_working_set_bytes{id=\"/\",kubernetes_io_hostname=~\"^$Node$\"})",
@@ -503,7 +517,6 @@
           "height": "1px",
           "id": 10,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -537,6 +550,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "sum (machine_memory_bytes{kubernetes_io_hostname=~\"^$Node$\"})",
@@ -583,7 +597,6 @@
           "height": "1px",
           "id": 11,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -617,6 +630,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "sum (rate (container_cpu_usage_seconds_total{id=\"/\",kubernetes_io_hostname=~\"^$Node$\"}[1m]))",
@@ -663,7 +677,6 @@
           "height": "1px",
           "id": 12,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -697,6 +710,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "sum (machine_cpu_cores{kubernetes_io_hostname=~\"^$Node$\"})",
@@ -743,7 +757,6 @@
           "height": "1px",
           "id": 13,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -777,6 +790,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "sum (container_fs_usage_bytes{device=~\"^/dev/.*$\",id=\"/\",kubernetes_io_hostname=~\"^$Node$\"})",
@@ -823,7 +837,6 @@
           "height": "1px",
           "id": 14,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -857,6 +870,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
+          "tableColumn": "",
           "targets": [
             {
               "expr": "sum (container_fs_limit_bytes{device=~\"^/dev/.*$\",id=\"/\",kubernetes_io_hostname=~\"^$Node$\"})",
@@ -880,31 +894,30 @@
           "valueName": "current"
         }
       ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
       "showTitle": false,
-      "title": "Total usage"
+      "title": "Total usage",
+      "titleSize": "h6"
     },
     {
       "collapse": false,
-      "editable": true,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_PROMETHEUS}",
           "decimals": 3,
           "editable": true,
           "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "fill": 1,
+          "grid": {},
           "height": "",
           "id": 17,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": true,
@@ -927,12 +940,14 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
-          "steppedLine": true,
+          "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (rate (container_cpu_usage_seconds_total{image!=\"\",name=~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}[1m])) by (pod_name)",
+              "expr": "topk(10, sum (rate (container_cpu_usage_seconds_total{image!=\"\",name=~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}[1m])) by (pod_name))",
+              "format": "time_series",
               "interval": "10s",
               "intervalFactor": 1,
               "legendFormat": "{{ pod_name }}",
@@ -941,6 +956,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "Pods CPU usage (1m avg)",
@@ -953,7 +969,11 @@
           "transparent": false,
           "type": "graph",
           "xaxis": {
-            "show": true
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
           "yaxes": [
             {
@@ -975,12 +995,15 @@
           ]
         }
       ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
       "showTitle": false,
-      "title": "Pods CPU usage"
+      "title": "Pods CPU usage",
+      "titleSize": "h6"
     },
     {
       "collapse": true,
-      "editable": true,
       "height": "250px",
       "panels": [
         {
@@ -991,12 +1014,7 @@
           "editable": true,
           "error": false,
           "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "height": "",
           "id": 23,
           "isNew": true,
@@ -1037,6 +1055,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "System services CPU usage (1m avg)",
@@ -1070,30 +1089,30 @@
           ]
         }
       ],
-      "title": "System services CPU usage"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "System services CPU usage",
+      "titleSize": "h6"
     },
     {
-      "collapse": true,
-      "editable": true,
+      "collapse": false,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_PROMETHEUS}",
           "decimals": 3,
           "editable": true,
           "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "fill": 2,
+          "grid": {},
           "height": "",
           "id": 24,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": true,
@@ -1119,12 +1138,14 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": true,
           "targets": [
             {
               "expr": "sum (rate (container_cpu_usage_seconds_total{image!=\"\",name=~\"^k8s_.*\",container_name!=\"POD\",kubernetes_io_hostname=~\"^$Node$\"}[1m])) by (container_name, pod_name)",
+              "format": "time_series",
               "hide": false,
               "interval": "10s",
               "intervalFactor": 1,
@@ -1135,6 +1156,7 @@
             },
             {
               "expr": "sum (rate (container_cpu_usage_seconds_total{image!=\"\",name!~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}[1m])) by (kubernetes_io_hostname, name, image)",
+              "format": "time_series",
               "hide": false,
               "interval": "10s",
               "intervalFactor": 1,
@@ -1145,6 +1167,7 @@
             },
             {
               "expr": "sum (rate (container_cpu_usage_seconds_total{rkt_container_name!=\"\",kubernetes_io_hostname=~\"^$Node$\"}[1m])) by (kubernetes_io_hostname, rkt_container_name)",
+              "format": "time_series",
               "interval": "10s",
               "intervalFactor": 1,
               "legendFormat": "rkt: {{ kubernetes_io_hostname }} | {{ rkt_container_name }}",
@@ -1153,6 +1176,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "Containers CPU usage (1m avg)",
@@ -1164,7 +1188,11 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
           "yaxes": [
             {
@@ -1186,11 +1214,15 @@
           ]
         }
       ],
-      "title": "Containers CPU usage"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Containers CPU usage",
+      "titleSize": "h6"
     },
     {
       "collapse": true,
-      "editable": true,
       "height": "500px",
       "panels": [
         {
@@ -1201,12 +1233,7 @@
           "editable": true,
           "error": false,
           "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 20,
           "isNew": true,
           "legend": {
@@ -1246,6 +1273,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "All processes CPU usage (1m avg)",
@@ -1280,30 +1308,28 @@
         }
       ],
       "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
       "showTitle": false,
-      "title": "All processes CPU usage"
+      "title": "All processes CPU usage",
+      "titleSize": "h6"
     },
     {
       "collapse": false,
-      "editable": true,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_PROMETHEUS}",
           "decimals": 2,
           "editable": true,
           "error": false,
           "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 25,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": true,
@@ -1326,13 +1352,17 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {}
+          ],
+          "spaceLength": 10,
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
-              "expr": "sum (container_memory_working_set_bytes{image!=\"\",name=~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}) by (pod_name)",
+              "expr": "topk(10, sum (container_memory_working_set_bytes{image!=\"\",name=~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}) by (pod_name))",
+              "format": "time_series",
               "interval": "10s",
               "intervalFactor": 1,
               "legendFormat": "{{ pod_name }}",
@@ -1341,6 +1371,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "Pods memory usage",
@@ -1352,7 +1383,11 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
           "yaxes": [
             {
@@ -1374,29 +1409,29 @@
           ]
         }
       ],
-      "title": "Pods memory usage"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Pods memory usage",
+      "titleSize": "h6"
     },
     {
       "collapse": true,
-      "editable": true,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_PROMETHEUS}",
           "decimals": 2,
           "editable": true,
           "error": false,
           "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 26,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": true,
@@ -1420,6 +1455,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": true,
@@ -1434,6 +1470,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "System services memory usage",
@@ -1445,7 +1482,11 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
           "yaxes": [
             {
@@ -1467,29 +1508,29 @@
           ]
         }
       ],
-      "title": "System services memory usage"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "System services memory usage",
+      "titleSize": "h6"
     },
     {
-      "collapse": true,
-      "editable": true,
+      "collapse": false,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_PROMETHEUS}",
           "decimals": 2,
           "editable": true,
           "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "fill": 2,
+          "grid": {},
           "id": 27,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": true,
@@ -1513,12 +1554,14 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": true,
           "targets": [
             {
-              "expr": "sum (container_memory_working_set_bytes{image!=\"\",name=~\"^k8s_.*\",container_name!=\"POD\",kubernetes_io_hostname=~\"^$Node$\"}) by (container_name, pod_name)",
+              "expr": "topk(5, sum (container_memory_working_set_bytes{image!=\"\",name=~\"^k8s_.*\",container_name!=\"POD\",kubernetes_io_hostname=~\"^$Node$\"}) by (container_name, pod_name))",
+              "format": "time_series",
               "interval": "10s",
               "intervalFactor": 1,
               "legendFormat": "pod: {{ pod_name }} | {{ container_name }}",
@@ -1527,7 +1570,8 @@
               "step": 10
             },
             {
-              "expr": "sum (container_memory_working_set_bytes{image!=\"\",name!~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}) by (kubernetes_io_hostname, name, image)",
+              "expr": "topk (5, sum (container_memory_working_set_bytes{image!=\"\",name!~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}) by (kubernetes_io_hostname, name, image))",
+              "format": "time_series",
               "interval": "10s",
               "intervalFactor": 1,
               "legendFormat": "docker: {{ kubernetes_io_hostname }} | {{ image }} ({{ name }})",
@@ -1536,7 +1580,8 @@
               "step": 10
             },
             {
-              "expr": "sum (container_memory_working_set_bytes{rkt_container_name!=\"\",kubernetes_io_hostname=~\"^$Node$\"}) by (kubernetes_io_hostname, rkt_container_name)",
+              "expr": "topk (5,sum (container_memory_working_set_bytes{rkt_container_name!=\"\",kubernetes_io_hostname=~\"^$Node$\"}) by (kubernetes_io_hostname, rkt_container_name))",
+              "format": "time_series",
               "interval": "10s",
               "intervalFactor": 1,
               "legendFormat": "rkt: {{ kubernetes_io_hostname }} | {{ rkt_container_name }}",
@@ -1545,6 +1590,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "Containers memory usage",
@@ -1556,7 +1602,11 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
           "yaxes": [
             {
@@ -1578,11 +1628,15 @@
           ]
         }
       ],
-      "title": "Containers memory usage"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Containers memory usage",
+      "titleSize": "h6"
     },
     {
       "collapse": true,
-      "editable": true,
       "height": "500px",
       "panels": [
         {
@@ -1593,12 +1647,7 @@
           "editable": true,
           "error": false,
           "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 28,
           "isNew": true,
           "legend": {
@@ -1638,6 +1687,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "All processes memory usage",
@@ -1671,29 +1721,29 @@
           ]
         }
       ],
-      "title": "All processes memory usage"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "All processes memory usage",
+      "titleSize": "h6"
     },
     {
       "collapse": false,
-      "editable": true,
       "height": "250px",
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "${DS_PROMETHEUS}",
           "decimals": 2,
           "editable": true,
           "error": false,
           "fill": 1,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 16,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": true,
@@ -1717,12 +1767,14 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 12,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (rate (container_network_receive_bytes_total{image!=\"\",name=~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}[1m])) by (pod_name)",
+              "expr": "topk(5, sum (rate (container_network_receive_bytes_total{image!=\"\",name=~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}[1m])) by (pod_name))",
+              "format": "time_series",
               "interval": "10s",
               "intervalFactor": 1,
               "legendFormat": "-> {{ pod_name }}",
@@ -1731,7 +1783,8 @@
               "step": 10
             },
             {
-              "expr": "- sum (rate (container_network_transmit_bytes_total{image!=\"\",name=~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}[1m])) by (pod_name)",
+              "expr": "- topk(5,sum (rate (container_network_transmit_bytes_total{image!=\"\",name=~\"^k8s_.*\",kubernetes_io_hostname=~\"^$Node$\"}[1m])) by (pod_name))",
+              "format": "time_series",
               "interval": "10s",
               "intervalFactor": 1,
               "legendFormat": "<- {{ pod_name }}",
@@ -1740,6 +1793,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "Pods network I/O (1m avg)",
@@ -1751,7 +1805,11 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
           "yaxes": [
             {
@@ -1773,11 +1831,15 @@
           ]
         }
       ],
-      "title": "Pods network I/O"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Pods network I/O",
+      "titleSize": "h6"
     },
     {
       "collapse": true,
-      "editable": true,
       "height": "250px",
       "panels": [
         {
@@ -1788,12 +1850,7 @@
           "editable": true,
           "error": false,
           "fill": 1,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 30,
           "isNew": true,
           "legend": {
@@ -1884,6 +1941,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "Containers network I/O (1m avg)",
@@ -1917,11 +1975,15 @@
           ]
         }
       ],
-      "title": "Containers network I/O"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Containers network I/O",
+      "titleSize": "h6"
     },
     {
       "collapse": true,
-      "editable": true,
       "height": "500px",
       "panels": [
         {
@@ -1932,12 +1994,7 @@
           "editable": true,
           "error": false,
           "fill": 1,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "grid": {},
           "id": 29,
           "isNew": true,
           "legend": {
@@ -1986,6 +2043,7 @@
               "step": 10
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "All processes network I/O (1m avg)",
@@ -2019,9 +2077,43 @@
           ]
         }
       ],
-      "title": "All processes network I/O"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "All processes network I/O",
+      "titleSize": "h6"
     }
   ],
+  "schemaVersion": 14,
+  "style": "dark",
+  "tags": [
+    "kubernetes"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": "${DS_PROMETHEUS}",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": false,
+        "name": "Node",
+        "options": [],
+        "query": "label_values(kubernetes_io_hostname)",
+        "refresh": 1,
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
   "time": {
     "from": "now-5m",
     "to": "now"
@@ -2051,29 +2143,7 @@
       "30d"
     ]
   },
-  "templating": {
-    "list": [
-      {
-        "allValue": ".*",
-        "current": {},
-        "datasource": "${DS_PROMETHEUS}",
-        "hide": 0,
-        "includeAll": true,
-        "multi": false,
-        "name": "Node",
-        "options": [],
-        "query": "label_values(kubernetes_io_hostname)",
-        "refresh": 1,
-        "type": "query"
-      }
-    ]
-  },
-  "annotations": {
-    "list": []
-  },
-  "refresh": "10s",
-  "schemaVersion": 12,
-  "version": 13,
-  "links": [],
-  "gnetId": 1621
+  "timezone": "browser",
+  "title": "Kubernetes cluster monitoring (via Prometheus)",
+  "version": 3
 }
