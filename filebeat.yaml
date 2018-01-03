@@ -41,7 +41,7 @@ data:
     - type: log
       paths:
         - /var/lib/docker/containers/*/*.log
-      exclude_lines: ['influxdb','filebeater','kibana','telegraf','HTTP/1.1" 2','^\[I\]','json.go:32: ERR Error decoding JSON','metrics.go:39','chronograf','level=info msg=','"url":"/logtrail','level=debug','replay_done','send_beacon active','update_stats avail','log \[DBG\]','exec: Running command: ceph','GetMetrics','handle_command mon_command','reply handle_command (0) Success'.'component=prometheusoperator']
+      exclude_lines: ['influxdb','filebeater','kibana','telegraf','HTTP/1.1" 2','^\[I\]','json.go:32: ERR Error decoding JSON','metrics.go:39','chronograf','level=info msg=','"url":"/logtrail','level=debug','replay_done','send_beacon active','update_stats avail','log \[DBG\]','exec: Running command: ceph','GetMetrics','handle_command mon_command','reply handle_command (0) Success','component=prometheusoperator']
       json.message_key: log
       json.keys_under_root: true
       processors:
