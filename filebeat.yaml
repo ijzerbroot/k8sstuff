@@ -68,6 +68,30 @@ data:
             when:
               contains:
                 kubernetes.labels.k8s-app: grafana
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.k8s-app: influxdb
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.k8s-app: kubernetes-dashboard
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.k8s-app: prometheus
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.k8s-app: prometheus-operator
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.app: rook-api
+        - drop_event:
+            when:
+              contains:
+                kubernetes.labels.app: metricbeat
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
