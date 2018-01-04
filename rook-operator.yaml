@@ -20,6 +20,7 @@ data:
     public network = 172.31.100.0/24
     mon data avail crit = 5
     osd pool default size = 2
+    osd host = 172.31.110.11, 172.31.110.12, 172.31.110.13
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
