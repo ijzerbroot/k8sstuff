@@ -1,13 +1,13 @@
 #!/bin/bash
 
 sudo ls
-kubectl apply -f traefik-rbac.yaml
-kubectl apply -f traefik-daemonset.yaml
-kubectl apply -f traefik-web-ui.yaml
+#kubectl apply -f traefik-rbac.yaml
+#kubectl apply -f traefik-daemonset.yaml
+#kubectl apply -f traefik-web-ui.yaml
 
 # weave scope
-kubectl apply --namespace kube-system -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl version | base64 | tr -d '\n')"
-kubectl create -f weavescope-ingress.yaml
+#kubectl apply --namespace kube-system -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+#kubectl create -f weavescope-ingress.yaml
 
 #sudo docker build -t localhost/kibana-logtrail:6.1.0 kibana
 sudo ls

@@ -16,11 +16,9 @@ metadata:
 data:
   config: |
     [global]
+    cluster network = 172.31.110.0/24
     mon data avail crit = 3
     osd pool default size = 2
-    debug mds log 0/20
-    debug mds 0/20
-    debug mon 0/20
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
