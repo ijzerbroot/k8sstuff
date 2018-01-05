@@ -331,7 +331,7 @@ make a tunnel and access it as localhost:
 http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/
 
 build custom Kibana-image to support Logtrail from Kibana dockerfile on every node as "localhost/kibana-logtrail:6.1.0"
-docker build -t localhost/kibana-logtrail:6.1.0 kibana
+docker build -t localhost/kibana-logtrail:6.1.1 kibana
 
 kubectl create -f rook-toolbox.yaml
 make mountpoints in bigfs

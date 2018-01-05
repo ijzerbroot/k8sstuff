@@ -73,7 +73,7 @@ spec:
       serviceAccountName: kibana
       containers:
 #        - image: docker.elastic.co/kibana/kibana-oss:6.1.0
-        - image: localhost/kibana-logtrail:6.1.0
+        - image: localhost/kibana-logtrail:6.1.1
           name: kibana
           resources:
             # need more cpu upon initialization, therefore burstable class

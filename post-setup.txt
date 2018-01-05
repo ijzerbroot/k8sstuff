@@ -4,3 +4,4 @@ After setting up a hyperconverged cluster we should label nodes that are to serv
 This is done with for example:
 
 kubectl label nodes k8snode2test role=storage-node
+kubectl label nodes workernodename role=worker-node
