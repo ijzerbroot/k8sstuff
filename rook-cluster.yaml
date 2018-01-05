@@ -10,7 +10,7 @@ spec:
   # In Minikube, the '/data' directory is configured to persist across reboots. Use "/data/rook" in Minikube environment.
   dataDirHostPath: /cephdata/rook/rookmetadata
   # toggle to use hostNetwork
-  hostNetwork: false
+  hostNetwork: true
   # set the amount of mons to be started
   monCount: 3
 # To control where various services will be scheduled by kubernetes, use the placement configuration sections below.
