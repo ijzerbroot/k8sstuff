@@ -116,7 +116,7 @@ spec:
   endpoints:
   - port: rook-api
     path: /metrics
-    interval: 5s
+    interval: 10s
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
