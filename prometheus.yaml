@@ -334,6 +334,13 @@ data:
       - source_labels: [__meta_kubernetes_pod_name]
         action: replace
         target_label: kubernetes_pod_name
+     - job_name: 'es-exporter'
+       dns_sd_configs:
+       - names:
+         - 'tasks.es-exporter'
+         type: 'A'
+         port: 8080
+
   alert.rules: |-
     groups:
     - name: targets
