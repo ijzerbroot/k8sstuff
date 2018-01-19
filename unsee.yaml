@@ -1,0 +1,119 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: unsee
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - nodes/proxy
+  - services
+  - endpoints
+  - pods
+  - cluster
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: unsee
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: unsee
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: unsee
+subjects:
+- kind: ServiceAccount
+  name: unsee
+  namespace: monitoring
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: unsee
+  namespace: monitoring
+  labels:
+    k8s-app: unsee
+    version: v1
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: unsee
+      version: v1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: unsee
+        k8s-app: unsee
+        version: v1
+        kubernetes.io/cluster-service: "true"
+    spec:
+      serviceAccountName: unsee
+      containers:
+        - environment:
+          - "ALERTMANAGER_URIS=default:http://alertmanager:9093"
+          - "LOG_LEVEL=error"
+          image: docker.io/cloudflare/unsee:v0.8.0
+          imagePullPolicy: IfNotPresent
+          name: unsee
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unsee
+  namespace: monitoring
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    k8s-app: unsee
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: unsee
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: unsee.lift
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: unsee
+            servicePort: 9093

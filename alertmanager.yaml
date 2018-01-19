@@ -1,0 +1,212 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: alertmanager
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - nodes/proxy
+  - services
+  - endpoints
+  - pods
+  - cluster
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alertmanager
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: alertmanager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: alertmanager
+subjects:
+- kind: ServiceAccount
+  name: alertmanager
+  namespace: monitoring
+---
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: monitoring
+apiVersion: v1
+data:
+  config.yml: |-
+    global:
+      # ResolveTimeout is the time after which an alert is declared resolved
+      # if it has not been updated.
+      resolve_timeout: 24h
+
+
+    # Files from which custom notification template definitions are read.
+    # The last component may use a wildcard matcher, e.g. 'templates/*.tmpl'.
+    #templates:
+    #  [ - <filepath> ... ]
+
+    # The root route with all parameters, which are inherited by the child
+    # routes if they are not overwritten.
+    route:
+      receiver: 'slack'
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      group_by: [cluster, alertname]
+      # All alerts that do not match the following child routes
+      # will remain at the root node and be dispatched to 'default-receiver'.
+
+    receivers:
+
+        - name: 'slack'
+          slack_configs:
+            - send_resolved: true
+              text: "{{ .CommonAnnotations.description }}"
+              username: 'Prometheus'
+              channel: '#ops-exceptions'
+              api_url: 'https://hooks.slack.com/services/token'
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: alertmanager-volume
+  namespace: default
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/kubedata/alertmanager"
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alertmanagerclaim
+  namespace: default
+  labels:
+    k8s-app: alertmanager
+spec:
+  storageClassName: manual
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: monitoring
+  labels:
+    k8s-app: alertmanager
+    version: v1
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: alertmanager
+      version: v1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: alertmanager
+        k8s-app: alertmanager
+        version: v1
+        kubernetes.io/cluster-service: "true"
+    spec:
+      serviceAccountName: alertmanager
+      containers:
+        - args:
+          - --config.file=/etc/alertmanager/config.yml
+          - --storage.path=/alertmanager
+          image: docker.io/prom/alertmanager:latest
+          imagePullPolicy: IfNotPresent
+          name: alertmanager
+          ports:
+            - containerPort: 9093
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2500Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - mountPath: /alertmanager
+              name: data
+            - mountPath: /etc/alertmanager
+              name: config-volume
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: alertmanagerclaim
+        - name: config-volume
+          configMap:
+            name: alertmanager-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  ports:
+  - port: 9093
+    protocol: TCP
+    targetPort: 9093
+  selector:
+    k8s-app: alertmanager
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: alertmanager
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: alertmanager.lift
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: alertmanager
+            servicePort: 9093
